@@ -107,7 +107,16 @@ footer {
   background: #f8cdda;
   margin-top: 3rem;
 }
+.hero-photo {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 999px;
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
 
 footer p {
   margin: 0.25rem 0;
 }
+
