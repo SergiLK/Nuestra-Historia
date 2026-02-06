@@ -16,11 +16,72 @@ body{
   line-height: 1.6;
 }
 
+/* Fondo en movimiento */
+@keyframes bgMove{
+  0%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
+  100%{ background-position: 0% 50%; }
+}
+
+/* Intro */
+.intro-screen{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 2000;
+  background: rgba(255,255,255,.25);
+  backdrop-filter: blur(10px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+
+.intro-screen.hide{
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.intro-card{
+  background: rgba(255,255,255,.85);
+  border-radius: 18px;
+  padding: 22px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  text-align: center;
+  max-width: 520px;
+  margin: 0 16px;
+}
+
+.intro-card h1{
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  margin-bottom: .4rem;
+}
+
+.intro-card p{
+  margin-top: .35rem;
+}
+
+.intro-small{
+  opacity: .75;
+  font-size: .95rem;
+}
+
 /* Secciones */
 section{
   padding: 4rem 2rem;
   max-width: 900px;
   margin: auto;
+}
+
+/* Entrada suave de la página */
+.timeline{
+  opacity: 0;
+  transform: translateY(10px);
+  animation: pageIn .8s ease forwards;
+}
+
+@keyframes pageIn{
+  to{ opacity: 1; transform: translateY(0); }
 }
 
 h2{
@@ -38,6 +99,16 @@ h2{
   border-left: 4px solid #f497b6;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   border-radius: 10px;
+}
+
+/* Animación al mostrar cada evento */
+.timeline .event.is-active{
+  animation: cardIn .45s ease;
+}
+
+@keyframes cardIn{
+  from{ opacity: 0; transform: translateY(10px); }
+  to{ opacity: 1; transform: translateY(0); }
 }
 
 .timeline h3{
@@ -73,7 +144,7 @@ h2{
   font-size: 1.05rem;
 }
 
-/* ===== Nuestra relación (texto + foto a la derecha) ===== */
+/* Nuestra relación */
 .relation-wrap{
   display: flex;
   gap: 1.5rem;
@@ -85,7 +156,6 @@ h2{
   min-width: 0;
 }
 
-/* Foto lateral sin recortar */
 .letter-event .relation-photo{
   flex: 0 0 200px;
   width: 200px;
@@ -95,7 +165,7 @@ h2{
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-/* ===== La primera vez que quedamos (texto + 2 fotos laterales con caption) ===== */
+/* La primera vez que quedamos (texto + 2 fotos laterales) */
 .date-wrap{
   display: flex;
   gap: 1.5rem;
@@ -108,7 +178,7 @@ h2{
 }
 
 .date-photos{
-  flex: 0 0 220px;      /* columna lateral */
+  flex: 0 0 220px;
   width: 220px;
   display: flex;
   flex-direction: column;
@@ -121,10 +191,11 @@ h2{
 
 .side-photo{
   width: 100%;
-  height: auto;          /* clave: no se hace gigante hacia abajo */
+  height: auto;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.10);
   display: block;
+  background: #fff;
 }
 
 .side-caption{
@@ -134,42 +205,7 @@ h2{
   line-height: 1.25;
 }
 
-/* ===== Animaciones ===== */
-
-/* Fondo en movimiento */
-@keyframes bgMove{
-  0%{ background-position: 0% 50%; }
-  50%{ background-position: 100% 50%; }
-  100%{ background-position: 0% 50%; }
-}
-
-/* Entrada suave de la página */
-.timeline{
-  opacity: 0;
-  transform: translateY(10px);
-  animation: pageIn .8s ease forwards;
-}
-
-@keyframes pageIn{
-  to{ opacity: 1; transform: translateY(0); }
-}
-
-/* ===== Modo EVENTO A EVENTO ===== */
-body.step-mode .timeline .event{
-  display: none;
-}
-
-body.step-mode .timeline .event.is-active{
-  display: block;
-  animation: cardIn .45s ease;
-}
-
-@keyframes cardIn{
-  from{ opacity: 0; transform: translateY(8px); }
-  to{ opacity: 1; transform: translateY(0); }
-}
-
-/* Botonera fija */
+/* Botonera fija (SIEMPRE visible) */
 .step-controls{
   position: fixed;
   bottom: 18px;
@@ -209,25 +245,25 @@ body.step-mode .timeline .event.is-active{
 
 /* Responsive */
 @media (max-width: 768px){
-  section{
-    padding: 3rem 1rem;
-  }
+  section{ padding: 3rem 1rem; }
 
-  .relation-wrap{
-    gap: 1rem;
-  }
-
+  .relation-wrap{ gap: 1rem; }
   .letter-event .relation-photo{
     flex-basis: 160px;
     width: 160px;
   }
 
-  .date-wrap{
-    gap: 1rem;
-  }
-
+  .date-wrap{ gap: 1rem; }
   .date-photos{
     flex-basis: 170px;
     width: 170px;
   }
+}
+
+/* Si el usuario prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce){
+  body{ animation: none; }
+  .timeline{ animation: none; opacity: 1; transform: none; }
+  .timeline .event.is-active{ animation: none; }
+  .intro-screen{ transition: none; }
 }
