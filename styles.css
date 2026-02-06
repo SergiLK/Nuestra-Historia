@@ -11,28 +11,6 @@ body {
   line-height: 1.6;
 }
 
-/* Portada (si la usas en otro momento) */
-.hero {
-  height: 100vh;
-  background: linear-gradient(to bottom right, #f8cdda, #fbc2eb);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 0 1.5rem;
-}
-
-.hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 4rem;
-}
-
-.hero p {
-  font-size: 1.2rem;
-  margin-top: 1rem;
-}
-
 /* Secciones */
 section {
   padding: 4rem 2rem;
@@ -77,7 +55,7 @@ h2 {
   margin: 1rem 0;
 }
 
-/* Estilo "carta" dentro de un evento */
+/* Estilo de texto tipo carta */
 .letter-event{
   padding: 2.5rem;
 }
@@ -110,12 +88,12 @@ h2 {
   background: #fff;
 }
 
-/* ===== La primera vez que quedamos: fotos al lateral (GRID) ===== */
+/* ===== La primera vez que quedamos: FORZAR fotos al lateral ===== */
 .date-wrap{
-  display: grid;
-  grid-template-columns: 1fr 220px; /* texto | columna fotos */
-  gap: 1.5rem;
-  align-items: start;
+  display: grid !important;
+  grid-template-columns: 1fr 220px !important;
+  gap: 1.5rem !important;
+  align-items: start !important;
 }
 
 .date-text{
@@ -123,32 +101,32 @@ h2 {
 }
 
 .date-photos{
-  width: 220px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  width: 220px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
 }
 
 .side-figure{
-  margin: 0;
+  margin: 0 !important;
 }
 
 .side-photo{
-  width: 100%;
-  height: auto;
-  max-height: 240px;     /* evita que se hagan enormes */
-  object-fit: contain;   /* NO recorta */
-  display: block;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  width: 100% !important;
+  height: auto !important;
+  max-height: 240px !important;
+  object-fit: contain !important;
+  display: block !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important;
   background: #fff;
 }
 
 .side-caption{
-  margin-top: 0.35rem;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  line-height: 1.35;
+  margin-top: 0.35rem !important;
+  font-size: 0.9rem !important;
+  opacity: 0.8 !important;
+  line-height: 1.35 !important;
 }
 
 /* Responsive */
@@ -163,16 +141,15 @@ h2 {
   }
 
   .date-wrap{
-    grid-template-columns: 1fr 150px;
-    gap: 1rem;
+    grid-template-columns: 1fr 150px !important;
+    gap: 1rem !important;
   }
 
   .date-photos{
-    width: 150px;
+    width: 150px !important;
   }
 
   .side-photo{
-    max-height: 180px;
+    max-height: 180px !important;
   }
 }
-
