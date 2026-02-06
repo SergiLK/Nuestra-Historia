@@ -67,6 +67,22 @@ h2 {
   margin-bottom: 0.5rem;
 }
 
+/* Fotos dentro de eventos */
+.event-photo{
+  width: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 1rem 0;
+}
+
+.divider{
+  border: none;
+  height: 1px;
+  background: rgba(0,0,0,0.12);
+  margin: 1rem 0;
+}
+
 /* Galería */
 .gallery .photos {
   display: grid;
@@ -86,7 +102,7 @@ h2 {
   font-size: 0.9rem;
 }
 
-/* Carta */
+/* Carta (si la usas en otra sección) */
 .letter {
   background: #fff;
   padding: 3rem;
@@ -107,19 +123,8 @@ footer {
   background: #f8cdda;
   margin-top: 3rem;
 }
-.event-photo{
-  width: 100%;
-  max-height: 380px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin: 1rem 0;
-}
-.divider{
-  border: none;
-  height: 1px;
-  background: rgba(0,0,0,0.12);
-  margin: 1rem 0;
-}
+
+/* Evento "Nuestra relación" (estilo carta) */
 .letter-event{
   padding: 2.5rem;
 }
@@ -130,43 +135,43 @@ footer {
   font-size: 1.05rem;
 }
 
-
-/* Foto al lado del texto en "Nuestra relación" (siempre en columna lateral) */
-.relation-wrap{
+/* Foto al lado del texto en "Nuestra relación" */
+.letter-event .relation-wrap{
   display: flex;
-  gap: 1.5rem;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 1.25rem;
   align-items: flex-start;
 }
 
-.relation-text{
+.letter-event .relation-text{
   flex: 1;
-  min-width: 0; /* importante para que el texto no empuje raro */
+  min-width: 0;
 }
 
-/* Ajuste: foto con tamaño fijo y recorte bonito (para que NO sea enorme) */
+/* Foto: que se vea entera (sin recorte) */
 .letter-event .relation-photo{
   flex: 0 0 200px;
   width: 200px;
-  height: auto;        /* clave: que no fuerce altura */
-  object-fit: contain; /* clave: no recorta */
+  height: auto;
+  object-fit: contain; /* NO recorta */
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-
-/* En pantallas pequeñas: sigue al lado, pero más pequeña */
+/* En móvil: sigue al lado, pero más estrecha */
 @media (max-width: 768px){
-  .relation-wrap{
+  .letter-event .relation-wrap{
     gap: 1rem;
   }
-  .relation-photo{
+
+  .letter-event .relation-photo{
     flex-basis: 160px;
     width: 160px;
-    height: 260px;
+    height: auto;
+    object-fit: contain;
   }
 }
-
-
 
 
 
