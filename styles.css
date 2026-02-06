@@ -11,7 +11,7 @@ body {
   line-height: 1.6;
 }
 
-/* Portada */
+/* Portada (si la usas en otro momento) */
 .hero {
   height: 100vh;
   background: linear-gradient(to bottom right, #f8cdda, #fbc2eb);
@@ -47,12 +47,6 @@ h2 {
   text-align: center;
 }
 
-/* Intro */
-.intro p {
-  text-align: center;
-  font-size: 1.1rem;
-}
-
 /* Timeline */
 .timeline .event {
   background: #fff;
@@ -67,8 +61,8 @@ h2 {
   margin-bottom: 0.5rem;
 }
 
-/* Fotos dentro de eventos */
-.event-photo{
+/* Fotos normales */
+.event-photo {
   width: 100%;
   max-height: 380px;
   object-fit: cover;
@@ -76,55 +70,14 @@ h2 {
   margin: 1rem 0;
 }
 
-.divider{
+.divider {
   border: none;
   height: 1px;
   background: rgba(0,0,0,0.12);
   margin: 1rem 0;
 }
 
-/* Galería */
-.gallery .photos {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.gallery img {
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.gallery-note {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-}
-
-/* Carta (si la usas en otra sección) */
-.letter {
-  background: #fff;
-  padding: 3rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  border-radius: 12px;
-}
-
-.letter p {
-  font-size: 1.1rem;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 2rem;
-  background: #f8cdda;
-  margin-top: 3rem;
-}
-
-/* Evento "Nuestra relación" (estilo carta) */
+/* Estilo "carta" dentro de un evento */
 .letter-event{
   padding: 2.5rem;
 }
@@ -135,57 +88,91 @@ footer {
   font-size: 1.05rem;
 }
 
-/* Foto al lado del texto en "Nuestra relación" */
-.letter-event .relation-wrap{
+/* ===== Nuestra relación: foto lateral ===== */
+.relation-wrap{
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 1.25rem;
+  gap: 1.5rem;
   align-items: flex-start;
 }
 
-.letter-event .relation-text{
+.relation-text{
   flex: 1;
   min-width: 0;
 }
 
-/* Foto: que se vea entera (sin recorte) */
 .letter-event .relation-photo{
   flex: 0 0 200px;
   width: 200px;
   height: auto;
-  object-fit: contain; /* NO recorta */
+  object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  background: #fff;
 }
 
+/* ===== La primera vez que quedamos: fotos al lateral (GRID) ===== */
+.date-wrap{
+  display: grid;
+  grid-template-columns: 1fr 220px; /* texto | columna fotos */
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.date-text{
+  min-width: 0;
+}
+
+.date-photos{
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.side-figure{
+  margin: 0;
+}
+
+.side-photo{
+  width: 100%;
+  height: auto;
+  max-height: 240px;     /* evita que se hagan enormes */
+  object-fit: contain;   /* NO recorta */
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  background: #fff;
+}
+
+.side-caption{
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.35;
+}
+
+/* Responsive */
 @media (max-width: 768px){
-  .letter-event .relation-wrap{
+  .relation-wrap{
     gap: 1rem;
   }
 
   .letter-event .relation-photo{
-    width: 160px !important;
-    flex-basis: 160px !important;
-    height: auto !important;
-    max-height: none !important;
-    object-fit: contain !important;
+    flex: 0 0 160px;
+    width: 160px;
+  }
+
+  .date-wrap{
+    grid-template-columns: 1fr 150px;
+    gap: 1rem;
+  }
+
+  .date-photos{
+    width: 150px;
+  }
+
+  .side-photo{
+    max-height: 180px;
   }
 }
-
-/* FORZAR: foto completa (sin recorte) */
-.letter-event .relation-photo{
-  width: 220px !important;
-  flex: 0 0 220px !important;
-
-  height: auto !important;
-  max-height: none !important;
-
-  object-fit: contain !important;
-  display: block !important;
-}
-
-
-
-
 
