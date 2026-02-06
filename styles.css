@@ -15,20 +15,33 @@ body{
 }
 
 /* Fondo animado */
+/* Fondo animado (romántico) */
 .bg{
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(120deg, #f8cdda, #fbc2eb, #f9d29d, #ffd1dc);
-  background-size: 400% 400%;
-  animation: bgMove 18s ease infinite;
+
+  /* Paleta romántica: rosas, lilas, melocotón, champagne */
+  background: linear-gradient(
+    120deg,
+    #ff9a9e,  /* rosa suave */
+    #fad0c4,  /* melocotón */
+    #ffd1dc,  /* pink pastel */
+    #cdb4db,  /* lila */
+    #bde0fe,  /* azul bebé */
+    #ffc8dd   /* rosa candy */
+  );
+
+  background-size: 500% 500%;
+  animation: bgMove 8s ease-in-out infinite;
 }
 
 @keyframes bgMove{
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
 
 /* Contenedor principal */
 .book{
@@ -403,4 +416,5 @@ h2{
   75%{ transform: translateX(-4px); }
   100%{ transform: translateX(0); }
 }
+
 
