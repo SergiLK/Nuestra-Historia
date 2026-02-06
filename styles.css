@@ -159,19 +159,33 @@ footer {
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-/* En móvil: sigue al lado, pero más estrecha */
 @media (max-width: 768px){
   .letter-event .relation-wrap{
     gap: 1rem;
   }
 
   .letter-event .relation-photo{
-    flex-basis: 160px;
-    width: 160px;
-    height: auto;
-    object-fit: contain;
+    width: 160px !important;
+    flex-basis: 160px !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
   }
 }
+
+/* FORZAR: foto completa (sin recorte) */
+.letter-event .relation-photo{
+  width: 220px !important;
+  flex: 0 0 220px !important;
+
+  height: auto !important;
+  max-height: none !important;
+
+  object-fit: contain !important;
+  display: block !important;
+}
+
+
 
 
 
