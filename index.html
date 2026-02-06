@@ -9,10 +9,112 @@
   <link rel="stylesheet" href="./styles.css?v=12">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+  <!-- SOLO lo nuevo (quiz + confetti) va aquí para no tocar tu styles.css -->
+  <style>
+    /* Confetti overlay (sin tocar styles.css) */
+    #confetti{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Portada: pista + hover */
+    .cover-hint{
+      margin-top: .45rem;
+      font-size: .92rem;
+      opacity: .85;
+      text-align: center;
+    }
+    .cover-photo{
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .cover-photo:hover{
+      transform: scale(1.01);
+      filter: brightness(1.02);
+    }
+
+    /* QUIZ */
+    .quiz{
+      margin-top: 1.2rem;
+      padding: 1.1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.75);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      transition: border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .quiz-title{
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: .35rem;
+    }
+    .quiz-question{
+      margin-bottom: .8rem;
+      opacity: .95;
+    }
+    .quiz-options{
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .quiz-btn{
+      flex: 1 1 260px;
+      text-align: left;
+    }
+    .quiz-feedback{
+      margin-top: .8rem;
+      font-weight: 700;
+      display: none;
+    }
+    .quiz.answered .quiz-feedback{
+      display: block;
+    }
+
+    /* Correcto = verde */
+    .quiz.correct{
+      border-color: rgba(34,197,94,0.55);
+      background: rgba(34,197,94,0.10);
+      animation: quizPop .28s ease;
+    }
+    .quiz.correct .quiz-feedback{
+      color: #15803d;
+    }
+
+    /* Incorrecto = rojo */
+    .quiz.wrong{
+      border-color: rgba(239,68,68,0.55);
+      background: rgba(239,68,68,0.10);
+      animation: quizShake .32s ease;
+    }
+    .quiz.wrong .quiz-feedback{
+      color: #b91c1c;
+    }
+
+    @keyframes quizPop{
+      0%{ transform: scale(0.98); }
+      100%{ transform: scale(1); }
+    }
+    @keyframes quizShake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-6px); }
+      50%{ transform: translateX(6px); }
+      75%{ transform: translateX(-4px); }
+      100%{ transform: translateX(0); }
+    }
+  </style>
 </head>
 
 <body>
   <div class="bg"></div>
+
+  <!-- Confetti overlay -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
 
   <main class="book">
 
@@ -32,8 +134,12 @@
     <section class="page" data-title="Portada">
       <div class="event">
         <h3>Feliz primer año juntos Ali ❤️</h3>
-        <img class="event-photo" src="./foto1.jpeg" alt="feliz primer año juntos Ali ❤️" />
+
+        <!-- Confeti al click -->
+        <img id="coverImg" class="event-photo cover-photo" src="./foto1.jpeg" alt="feliz primer año juntos Ali ❤️" />
+
         <p>Esto es solo una pequeña dedicatoria de como ha surgido todo y de nuestro recorrido, espero que te guste ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️</p>
+        <p class="cover-hint">👉 (Pista: haz click en la foto 😉)</p>
       </div>
     </section>
 
@@ -48,11 +154,28 @@
       </div>
     </section>
 
-    <!-- PÁGINA 3 -->
+    <!-- PÁGINA 3 (AÑADIDO QUIZ) -->
     <section class="page" data-title="Cuando empezamos a hablar semanalmente">
       <div class="event">
         <h3>💬 Cuando empezamos a hablar semanalmente</h3>
         <p>(Cuenta cómo se volvió “normal” hablar, cómo te sentías esperando sus mensajes, qué os unió.)</p>
+
+        <!-- QUIZ: 1 pregunta (verde si acierta, rojo si falla) -->
+        <div id="quiz1" class="quiz" aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta rápida</h4>
+          <p class="quiz-question">¿Cuál fue nuestra primera cita “oficial”?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">
+              A) La primera vez que nos vimos
+            </button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">
+              B) La vez que quedamos como cita de verdad
+            </button>
+          </div>
+
+          <p class="quiz-feedback" id="quizFeedback"></p>
+        </div>
       </div>
     </section>
 
@@ -233,6 +356,115 @@
       });
 
       showPage(0);
+
+      /********************
+       * CONFETTI (click en la imagen de portada)
+       ********************/
+      const confettiCanvas = document.getElementById("confetti");
+      const cctx = confettiCanvas.getContext("2d");
+
+      let confettiPieces = [];
+      let confettiRunning = false;
+
+      function resizeConfetti() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+        confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+        return dpr;
+      }
+
+      function launchConfetti() {
+        const dpr = resizeConfetti();
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+
+        const count = 180;
+        confettiPieces = [];
+
+        for (let i = 0; i < count; i++) {
+          confettiPieces.push({
+            x: Math.random() * W,
+            y: -20 - Math.random() * H * 0.2,
+            vx: (Math.random() * 2 - 1) * 1.8 * dpr,
+            vy: (2 + Math.random() * 4) * dpr,
+            r: (2 + Math.random() * 5) * dpr,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() * 2 - 1) * 0.12,
+            hue: Math.floor(Math.random() * 360),
+            life: 0,
+            ttl: 240 + Math.floor(Math.random() * 60)
+          });
+        }
+
+        confettiRunning = true;
+        requestAnimationFrame(confettiTick);
+        setTimeout(() => { confettiRunning = false; }, 2600);
+      }
+
+      function confettiTick() {
+        if (!confettiRunning) {
+          cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+          return;
+        }
+
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+        cctx.clearRect(0, 0, W, H);
+
+        for (const p of confettiPieces) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.life++;
+
+          if (p.x < -30) p.x = W + 30;
+          if (p.x > W + 30) p.x = -30;
+
+          const alpha = Math.max(0, 1 - p.life / p.ttl);
+          cctx.save();
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+          cctx.globalAlpha = alpha;
+          cctx.fillStyle = `hsl(${p.hue} 90% 60%)`;
+          cctx.fillRect(-p.r, -p.r * 0.6, p.r * 2.2, p.r * 1.2);
+          cctx.restore();
+        }
+
+        requestAnimationFrame(confettiTick);
+      }
+
+      window.addEventListener("resize", resizeConfetti);
+
+      const coverImg = document.getElementById("coverImg");
+      coverImg?.addEventListener("click", launchConfetti);
+
+      /********************
+       * QUIZ (1 pregunta: verde/rojo)
+       ********************/
+      const quiz = document.getElementById("quiz1");
+      const feedback = document.getElementById("quizFeedback");
+
+      if (quiz && feedback) {
+        const buttons = quiz.querySelectorAll("button[data-answer]");
+
+        buttons.forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (quiz.classList.contains("answered")) return; // ya contestado
+
+            const result = btn.dataset.answer; // "correct" o "wrong"
+            quiz.classList.add("answered");
+            buttons.forEach(b => b.disabled = true);
+
+            if (result === "correct") {
+              quiz.classList.add("correct");
+              feedback.textContent = "✅ Siiii 💘";
+            } else {
+              quiz.classList.add("wrong");
+              feedback.textContent = "❌ Noooo ";
+            }
+          });
+        });
+      }
     });
   </script>
 </body>
