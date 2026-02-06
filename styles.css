@@ -301,3 +301,106 @@ h2{
   .bg{ animation: none; }
   .page.active{ animation: none; opacity: 1; transform: none; }
 }
+/* ===== Confetti overlay ===== */
+#confetti{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  pointer-events: none;
+  display: block;
+}
+
+/* Portada clickable (confeti) */
+.cover-photo{
+  cursor: pointer;
+  transition: transform .18s ease, filter .18s ease;
+}
+.cover-photo:hover{
+  transform: scale(1.01);
+  filter: brightness(1.02);
+}
+.cover-hint{
+  margin-top: .4rem;
+  font-size: .92rem;
+  opacity: .85;
+  text-align: center;
+}
+
+/* ===== QUIZ ===== */
+.quiz{
+  margin-top: 1.2rem;
+  padding: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.75);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+
+.quiz-title{
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  margin-bottom: .35rem;
+}
+
+.quiz-question{
+  margin-bottom: .8rem;
+}
+
+.quiz-options{
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.quiz-btn{
+  flex: 1 1 260px;
+  text-align: left;
+}
+
+.quiz-feedback{
+  margin-top: .8rem;
+  font-weight: 700;
+  display: none;
+}
+
+/* Estado contestado */
+.quiz.answered .quiz-feedback{
+  display: block;
+}
+
+/* Correcto = verde */
+.quiz.correct{
+  border-color: rgba(34,197,94,0.55);
+  background: rgba(34,197,94,0.10);
+  animation: quizPop .28s ease;
+}
+.quiz.correct .quiz-feedback{
+  color: #15803d;
+}
+
+/* Incorrecto = rojo */
+.quiz.wrong{
+  border-color: rgba(239,68,68,0.55);
+  background: rgba(239,68,68,0.10);
+  animation: quizShake .32s ease;
+}
+.quiz.wrong .quiz-feedback{
+  color: #b91c1c;
+}
+
+@keyframes quizPop{
+  0%{ transform: scale(0.98); }
+  100%{ transform: scale(1); }
+}
+
+@keyframes quizShake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-6px); }
+  50%{ transform: translateX(6px); }
+  75%{ transform: translateX(-4px); }
+  100%{ transform: translateX(0); }
+}
+
