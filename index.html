@@ -425,7 +425,8 @@ e<!DOCTYPE html>
     <h2 class="final-title">Te amo</h2>
     <p class="final-sub">No hay palabras que puedan explicar lo mucho que eres para mi</p>
 
-    <p class="final-question">¿Quieres renovar y volver a ser mi novia otro año mas?</p>
+    <p class="final-question">¿Quieres ser mi novia otro año mas?</p>
+
 
     <div class="final-actions">
       <button id="renewYes" class="btn btn-primary final-yes" type="button">Sí</button>
@@ -679,7 +680,7 @@ e<!DOCTYPE html>
       unlockDate?.addEventListener("input", checkUnlock);
       unlockDate?.addEventListener("change", checkUnlock);
 /********************
- * FINAL: "Renovar otro año" (NO agranda SÍ 5 veces, a la 6ª desaparece NO)
+ * FINAL: "¿Quieres ser mi novia otro año más?"
  ********************/
 const renewYes = document.getElementById("renewYes");
 const renewNo  = document.getElementById("renewNo");
@@ -688,8 +689,8 @@ const renewMsg = document.getElementById("renewMsg");
 let noCount = 0;
 
 function applyYesSize(steps){
-  const s = Math.min(steps, 5);        // máximo 5 crecimientos
-  const scale = 1 + s * 0.18;          // ajusta si lo quieres más bestia
+  const s = Math.min(steps, 5);
+  const scale = 1 + s * 0.18;
   renewYes.style.transform = `scale(${scale})`;
   renewYes.style.fontSize = `${1 + s * 0.12}rem`;
   renewYes.style.padding  = `${0.85 + s * 0.10}rem ${1.10 + s * 0.20}rem`;
@@ -698,28 +699,31 @@ function applyYesSize(steps){
 renewNo?.addEventListener("click", () => {
   noCount++;
 
-  if (noCount <= 5) {
+  // 1 a 4: crece y sale "prueba otra vez"
+  if (noCount <= 4) {
     applyYesSize(noCount);
-    if (renewMsg) renewMsg.textContent = "😄 Esa respuesta no vale… prueba otra vez";
+    if (renewMsg) renewMsg.textContent = "😄 Esa respuesta no vale…";
     return;
   }
 
-  // 6ª vez: NO desaparece y queda solo SÍ gigante
+  // 5º: NO desaparece y ya NO mostramos mensajes
   renewNo.style.display = "none";
   applyYesSize(5);
-  if (renewMsg) renewMsg.textContent = "😌 Vale… entonces solo queda una opción ❤️";
+  if (renewMsg) renewMsg.textContent = "";
 });
 
 renewYes?.addEventListener("click", () => {
-  if (renewMsg) renewMsg.textContent = "💘 SÍIIII. Otro año más.";
-  // Si existe tu confetti, lo lanzamos:
+  // No mostrar texto final
+  if (renewMsg) renewMsg.textContent = "";
+
+  // Confeti si existe tu función
   if (typeof launchConfetti === "function") launchConfetti();
 });
-
     });
   </script>
 </body>
 </html>
+
 
 
 
