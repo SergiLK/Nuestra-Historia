@@ -416,5 +416,46 @@ h2{
   75%{ transform: translateX(-4px); }
   100%{ transform: translateX(0); }
 }
+/* ===== PÁGINA FINAL ===== */
+.final-card{
+  text-align: center;
+}
+
+.final-title{
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-bottom: .35rem;
+}
+
+.final-sub{
+  font-size: 1.1rem;
+  opacity: .9;
+  margin-bottom: 1.25rem;
+}
+
+.final-question{
+  margin-top: 1rem;
+  font-weight: 800;
+}
+
+.final-actions{
+  margin-top: 1rem;
+  display: flex;
+  gap: .8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.final-yes{
+  transition: transform .22s ease, font-size .22s ease, padding .22s ease;
+  transform-origin: center;
+}
+
+.final-msg{
+  margin-top: 1rem;
+  font-weight: 800;
+  min-height: 1.2em;
+}
+
 
 
