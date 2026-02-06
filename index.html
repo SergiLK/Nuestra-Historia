@@ -491,15 +491,10 @@
         requestAnimationFrame(starsTick);
       }
 
-      function resizeCanvas(canvas) {
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  const w = Math.floor(window.innerWidth * dpr);
-  const h = Math.floor(window.innerHeight * dpr);
-  canvas.width = w;
-  canvas.height = h;
-  return dpr;
-}
-
+      function onResize() {
+        initStars();
+        resizeCanvas(confettiCanvas);
+      }
       window.addEventListener("resize", onResize);
 
       onResize();
@@ -510,6 +505,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
