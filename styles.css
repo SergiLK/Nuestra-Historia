@@ -125,30 +125,3 @@
   }
   .flip{ transition: none; }
 }
-/* --- FIX: capas fondo --- */
-.bg{
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-}
-
-#stars{
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;           /* estrellas por encima del .bg */
-  pointer-events: none;
-  display: block;
-}
-
-#confetti{
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
-  pointer-events: none;
-  display: block;
-}
-
