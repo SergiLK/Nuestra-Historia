@@ -129,4 +129,35 @@ footer {
   text-align: left;
   font-size: 1.05rem;
 }
+/* Foto al lateral en "Nuestra relación" */
+.relation-wrap{
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.relation-text{
+  flex: 1;
+}
+
+.relation-photo{
+  width: 320px;
+  max-width: 40%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* En móvil: foto debajo del texto */
+@media (max-width: 768px){
+  .relation-wrap{
+    flex-direction: column;
+  }
+  .relation-photo{
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
 
