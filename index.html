@@ -579,6 +579,8 @@
 
         prevBtn.disabled = current === 0;
         nextBtn.disabled = current === pages.length - 1;
+        if (!firstRender) burstHearts(8);
+        firstRender = false;
 
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
@@ -675,6 +677,38 @@
 
       const coverImg = document.getElementById("coverImg");
       coverImg?.addEventListener("click", launchConfetti);
+      // ===== Música (Play/Pausa + Volumen) =====
+      const bgm = document.getElementById("bgm");
+      const musicBtn = document.getElementById("musicBtn");
+      const musicVol = document.getElementById("musicVol");
+
+      if (bgm) {
+        bgm.volume = Number(musicVol?.value ?? 0.35);
+      }
+
+      musicVol?.addEventListener("input", () => {
+        if (!bgm) return;
+        bgm.volume = Number(musicVol.value);
+      });
+
+      function updateMusicBtn(){
+        if (!musicBtn || !bgm) return;
+        musicBtn.textContent = bgm.paused ? "🎵 Música" : "⏸️ Pausar";
+      }
+
+      musicBtn?.addEventListener("click", async () => {
+        if (!bgm) return;
+        try{
+          if (bgm.paused) await bgm.play();
+          else bgm.pause();
+        } finally {
+          updateMusicBtn();
+        }
+      });
+
+      bgm?.addEventListener("play", updateMusicBtn);
+      bgm?.addEventListener("pause", updateMusicBtn);
+      updateMusicBtn();
 
       /********************
        * QUIZ (MÚLTIPLES preguntas + puntuación)
@@ -812,16 +846,23 @@ renewNo?.addEventListener("click", () => {
 });
 
 renewYes?.addEventListener("click", () => {
-  // No mostrar texto final
   if (renewMsg) renewMsg.textContent = "";
 
-  // Confeti si existe tu función
   if (typeof launchConfetti === "function") launchConfetti();
+  burstHearts(16);
+
+  if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+  setTimeout(() => {
+    window.location.href = "./si.html";
+  }, 1200);
 });
+
     });
   </script>
 </body>
 </html>
+
 
 
 
