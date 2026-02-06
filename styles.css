@@ -1,236 +1,204 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root{
+  --bg1:#f7f2ea;
+  --bg2:#f1e6f2;
+  --paper:#ffffff;
+  --ink:#1e1e1e;
+  --muted:#5f5f5f;
+  --shadow: 0 18px 60px rgba(0,0,0,.12);
+  --radius: 18px;
+}
+
+*{ box-sizing:border-box; }
+
+html, body{
+  height: 100%;
 }
 
 body{
-  font-family: 'Montserrat', sans-serif;
-  color: #333;
-  line-height: 1.6;
-
-  /* espacio para la barra de navegación fija */
-  padding: 2rem 1rem 6.5rem;
-  min-height: 100vh;
+  margin:0;
+  color: var(--ink);
+  font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  overflow-x: hidden;
 }
 
-/* Fondo animado */
+/* Fondo suave */
 .bg{
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(120deg, #f8cdda, #fbc2eb, #f9d29d, #ffd1dc);
-  background-size: 400% 400%;
-  animation: bgMove 18s ease infinite;
+  background:
+    radial-gradient(900px 600px at 20% 20%, rgba(255, 150, 200, .18), transparent 60%),
+    radial-gradient(900px 600px at 80% 30%, rgba(140, 180, 255, .18), transparent 60%),
+    radial-gradient(900px 600px at 50% 90%, rgba(255, 220, 140, .14), transparent 60%);
+  filter: blur(0px);
 }
 
-@keyframes bgMove{
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Contenedor principal */
+/* Contenedor “libro” */
 .book{
-  max-width: 900px;
-  margin: 0 auto;
+  width: min(980px, calc(100% - 28px));
+  margin: 28px auto 90px;
 }
 
-/* Páginas */
+/* Páginas: SOLO se ve la activa */
 .page{
   display: none;
-  opacity: 0;
-  transform: translateY(10px);
 }
-
 .page.active{
   display: block;
-  animation: pageIn .45s ease forwards;
-}
-
-@keyframes pageIn{
-  to{
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Tarjeta de evento */
 .event{
-  background: #fff;
-  padding: 1.75rem;
-  border-left: 4px solid #f497b6;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
-  border-radius: 12px;
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  border: 1px solid rgba(0,0,0,.05);
 }
 
-/* Titulares */
-h2{
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.event h3{
-  font-family: 'Playfair Display', serif;
-  font-size: 1.55rem;
-  margin-bottom: 1rem;
-}
-
-/* Hero */
+/* Portada/hero */
 .hero-card{
-  text-align: center;
-  padding: 2.5rem 1.75rem;
+  text-align: left;
+  padding: 28px;
 }
 
-.hero-card h1{
-  font-family: 'Playfair Display', serif;
-  font-size: 3rem;
+h1, h3{
+  font-family: "Playfair Display", serif;
+  margin: 0 0 10px;
+}
+
+h1{
+  font-size: clamp(34px, 4vw, 54px);
+  letter-spacing: .2px;
+}
+
+h3{
+  font-size: clamp(22px, 3vw, 28px);
+}
+
+p{
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .hero-sub{
-  margin-top: .5rem;
   font-size: 1.05rem;
+  margin-bottom: 16px;
 }
 
 .hero-hint{
-  margin-top: 1rem;
-  font-size: .95rem;
-  opacity: .85;
+  margin-top: 14px;
+  opacity: .9;
 }
 
-/* Fotos generales */
+/* Fotos */
 .event-photo{
   width: 100%;
-  max-height: 380px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin: 1rem 0;
+  height: auto;
+  border-radius: 14px;
+  display: block;
+  margin: 14px 0;
+  border: 1px solid rgba(0,0,0,.06);
 }
 
-/* Separador */
 .divider{
   border: none;
   height: 1px;
-  background: rgba(0,0,0,0.12);
-  margin: 1rem 0;
+  background: rgba(0,0,0,.08);
+  margin: 18px 0;
 }
 
 /* Botones */
 .btn{
-  border: none;
-  padding: .85rem 1.1rem;
+  appearance: none;
+  border: 1px solid rgba(0,0,0,.12);
+  background: rgba(0,0,0,.03);
+  color: var(--ink);
+  padding: 10px 14px;
   border-radius: 999px;
   cursor: pointer;
   font-weight: 600;
-  font-family: 'Montserrat', sans-serif;
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+
+.btn:hover{
+  transform: translateY(-1px);
+  background: rgba(0,0,0,.05);
+  border-color: rgba(0,0,0,.18);
+}
+
+.btn:active{
+  transform: translateY(0px) scale(.98);
 }
 
 .btn-primary{
-  background: #f497b6;
+  background: #111;
   color: #fff;
+  border-color: #111;
 }
 
 .btn-primary:hover{
-  filter: brightness(0.96);
+  background: #222;
+  border-color: #222;
 }
 
 .btn-ghost{
-  background: rgba(255,255,255,0.85);
-  color: #333;
-  border: 1px solid rgba(0,0,0,0.08);
+  background: transparent;
 }
 
-.btn:disabled{
-  opacity: .55;
-  cursor: not-allowed;
-}
-
-/* Barra navegación */
+/* Pager inferior */
 .pager{
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 16px;
-  width: min(900px, calc(100% - 2rem));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 14px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: .75rem;
-
-  background: rgba(255,255,255,0.7);
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255,255,255,.78);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 14px;
-  padding: .75rem .9rem;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+  border-top: 1px solid rgba(0,0,0,.08);
 }
 
 .page-indicator{
-  font-size: .95rem;
-  opacity: .9;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.03);
+  border: 1px solid rgba(0,0,0,.06);
+  font-weight: 600;
 }
 
 .page-indicator .dot{
-  opacity: .6;
+  opacity: .5;
 }
 
-/* Texto tipo carta */
+/* Layout especial “La primera vez que quedamos” */
 .letter-event{
-  padding: 2.2rem;
+  padding: 24px;
 }
 
-.letter-event p{
-  margin: 0 0 1rem 0;
-  text-align: left;
-  font-size: 1.05rem;
-}
-
-/* NUESTRA RELACIÓN: foto lateral */
-.relation-wrap{
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-}
-
-.relation-text{
-  flex: 1;
-  min-width: 0;
-}
-
-.relation-photo{
-  flex: 0 0 220px;
-  width: 220px;
-  height: auto;
-  object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-  background: rgba(250,247,244,0.8);
-  padding: .25rem;
-}
-
-/* LA PRIMERA VEZ: texto + columna de fotos */
 .date-wrap{
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 18px;
+  margin-top: 10px;
 }
 
-.date-text{
-  flex: 1;
-  min-width: 0;
+.date-text p{
+  margin-bottom: 12px;
 }
 
 .date-photos{
-  flex: 0 0 240px;
-  width: 240px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
 }
 
 .side-figure{
@@ -239,65 +207,44 @@ h2{
 
 .side-photo{
   width: 100%;
-  height: 240px;           /* controla tamaño */
-  object-fit: contain;     /* NO recorta */
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-  background: rgba(250,247,244,0.85);
-  padding: .25rem;
+  height: auto;
+  border-radius: 14px;
+  display:block;
+  border: 1px solid rgba(0,0,0,.06);
 }
 
 .side-caption{
-  margin-top: .45rem;
-  font-size: .9rem;
-  opacity: .85;
-  text-align: left;
+  margin-top: 8px;
+  font-size: .92rem;
+  color: var(--muted);
+}
+
+/* Última página relación */
+.relation-wrap{
+  display:grid;
+  grid-template-columns: 1.3fr .7fr;
+  gap: 18px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+.relation-photo{
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  display:block;
+  border: 1px solid rgba(0,0,0,.06);
 }
 
 /* Responsive */
 @media (max-width: 900px){
-  .relation-photo{
-    flex-basis: 190px;
-    width: 190px;
+  .date-wrap, .relation-wrap{
+    grid-template-columns: 1fr;
   }
-  .date-photos{
-    flex-basis: 210px;
-    width: 210px;
+  .pager{
+    justify-content: space-between;
   }
-  .side-photo{
-    height: 220px;
+  .page-indicator{
+    display:none; /* en móvil deja solo botones */
   }
-}
-
-@media (max-width: 768px){
-  .relation-wrap,
-  .date-wrap{
-    flex-direction: column;
-  }
-
-  .relation-photo{
-    width: 100%;
-    max-width: 360px;
-  }
-
-  .date-photos{
-    width: 100%;
-    flex-basis: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .side-figure{
-    flex: 1 1 260px;
-  }
-
-  .side-photo{
-    height: 220px;
-  }
-}
-
-/* Si alguien tiene "reducir movimiento" activado */
-@media (prefers-reduced-motion: reduce){
-  .bg{ animation: none; }
-  .page.active{ animation: none; opacity: 1; transform: none; }
 }
