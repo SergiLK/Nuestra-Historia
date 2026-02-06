@@ -120,3 +120,13 @@ footer {
   background: rgba(0,0,0,0.12);
   margin: 1rem 0;
 }
+.letter-event{
+  padding: 2.5rem;
+}
+
+.letter-event p{
+  margin: 0 0 1rem 0;
+  text-align: left;
+  font-size: 1.05rem;
+}
+
