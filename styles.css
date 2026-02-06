@@ -149,15 +149,39 @@ footer {
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
-/* En móvil: foto debajo del texto */
+/* Foto al lado del texto en "Nuestra relación" (siempre en columna lateral) */
+.relation-wrap{
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.relation-text{
+  flex: 1;
+  min-width: 0; /* importante para que el texto no empuje raro */
+}
+
+/* Ajuste: foto con tamaño fijo y recorte bonito (para que NO sea enorme) */
+.relation-photo{
+  flex: 0 0 240px;        /* ancho fijo de la columna de la foto */
+  width: 240px;
+  height: 380px;          /* alto controlado (así no se hace gigante) */
+  object-fit: cover;      /* recorta para encajar */
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* En pantallas pequeñas: sigue al lado, pero más pequeña */
 @media (max-width: 768px){
   .relation-wrap{
-    flex-direction: column;
+    gap: 1rem;
   }
   .relation-photo{
-    max-width: 100%;
-    width: 100%;
+    flex-basis: 160px;
+    width: 160px;
+    height: 260px;
   }
 }
+
 
 
