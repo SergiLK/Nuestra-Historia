@@ -144,14 +144,15 @@ footer {
 }
 
 /* Ajuste: foto con tamaño fijo y recorte bonito (para que NO sea enorme) */
-.relation-photo{
-  flex: 0 0 240px;        /* ancho fijo de la columna de la foto */
-  width: 240px;
-  height: 380px;          /* alto controlado (así no se hace gigante) */
-  object-fit: cover;      /* recorta para encajar */
+.letter-event .relation-photo{
+  flex: 0 0 200px;
+  width: 200px;
+  height: auto;        /* clave: que no fuerce altura */
+  object-fit: contain; /* clave: no recorta */
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
+
 
 /* En pantallas pequeñas: sigue al lado, pero más pequeña */
 @media (max-width: 768px){
@@ -164,6 +165,7 @@ footer {
     height: 260px;
   }
 }
+
 
 
 
