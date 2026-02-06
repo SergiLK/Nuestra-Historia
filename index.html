@@ -511,6 +511,16 @@
 
     <button id="nextBtn" class="btn btn-primary" type="button">Siguiente</button>
   </nav>
+<!-- Corazones flotantes -->
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- Música (elige tú el mp3) -->
+<audio id="bgm" src="./cancion.mp3" preload="none" loop></audio>
+
+<div class="music-controls" aria-label="Controles de música">
+  <button id="musicBtn" class="btn btn-ghost" type="button">🎵 Música</button>
+  <input id="musicVol" type="range" min="0" max="1" step="0.05" value="0.35" aria-label="Volumen música" />
+</div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -812,6 +822,7 @@ renewYes?.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
