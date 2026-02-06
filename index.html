@@ -517,8 +517,9 @@
 <div id="hearts" aria-hidden="true"></div>
 
 <!-- Música (elige tú el mp3) -->
-<audio id="bgm" src="./cancion.mp3" preload="metadata" loop playsinline></audio>
-
+<audio id="bgm" preload="auto" loop playsinline>
+  <source src="./cancion.mp3?v=1" type="audio/mpeg">
+</audio>
 
 <div class="music-controls" aria-label="Controles de música">
   <button id="musicBtn" class="btn btn-ghost" type="button">🎵 Música</button>
@@ -588,7 +589,14 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      startBtn?.addEventListener("click", () => showPage(1));
+     startBtn?.addEventListener("click", async () => {
+  try {
+    const bgm = document.getElementById("bgm");
+    if (bgm && bgm.paused) await bgm.play();
+  } catch (e) {}
+  showPage(1);
+});
+
       prevBtn.addEventListener("click", () => showPage(current - 1));
       nextBtn.addEventListener("click", () => showPage(current + 1));
 
@@ -687,6 +695,8 @@
 
       if (bgm) {
         bgm.volume = Number(musicVol?.value ?? 0.35);
+        bgm.load();
+
       }
 
       musicVol?.addEventListener("input", () => {
@@ -873,6 +883,7 @@ renewYes?.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
