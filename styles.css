@@ -1,4 +1,4 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -6,121 +6,101 @@
 
 body{
   font-family: 'Montserrat', sans-serif;
-
-  /* Fondo animado */
-  background: linear-gradient(-45deg, #faf7f4, #f8cdda, #fbc2eb, #faf7f4);
-  background-size: 400% 400%;
-  animation: bgMove 18s ease infinite;
-
   color: #333;
   line-height: 1.6;
+
+  /* espacio para la barra de navegación fija */
+  padding: 2rem 1rem 6.5rem;
+  min-height: 100vh;
 }
 
-/* Fondo en movimiento */
-@keyframes bgMove{
-  0%{ background-position: 0% 50%; }
-  50%{ background-position: 100% 50%; }
-  100%{ background-position: 0% 50%; }
-}
-
-/* ✅ Pantalla EMPEZAR */
-.start-screen{
+/* Fondo animado */
+.bg{
   position: fixed;
   inset: 0;
-  display: grid;
-  place-items: center;
-  z-index: 3000;
-  background: rgba(255,255,255,.25);
-  backdrop-filter: blur(10px);
-  transition: opacity .6s ease, transform .6s ease;
+  z-index: -1;
+  background: linear-gradient(120deg, #f8cdda, #fbc2eb, #f9d29d, #ffd1dc);
+  background-size: 400% 400%;
+  animation: bgMove 18s ease infinite;
 }
 
-.start-screen.hide{
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
+@keyframes bgMove{
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.start-card{
-  background: rgba(255,255,255,.88);
-  border-radius: 18px;
-  padding: 24px 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.12);
-  text-align: center;
-  max-width: 540px;
-  margin: 0 16px;
-}
-
-.start-card h1{
-  font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  margin-bottom: .5rem;
-}
-
-.start-card p{ margin-top: .35rem; }
-
-.start-card button{
-  margin-top: 14px;
-  border: none;
-  background: #f497b6;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 999px;
-  font-family: inherit;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.start-small{
-  margin-top: 12px;
-  opacity: .75;
-  font-size: .95rem;
-}
-
-/* Secciones */
-section{
-  padding: 4rem 2rem;
+/* Contenedor principal */
+.book{
   max-width: 900px;
-  margin: auto;
+  margin: 0 auto;
 }
 
-/* Timeline entrada (solo cuando started) */
-.timeline{
+/* Páginas */
+.page{
+  display: none;
   opacity: 0;
   transform: translateY(10px);
 }
 
-body.started .timeline{
-  animation: pageIn .8s ease forwards;
+.page.active{
+  display: block;
+  animation: pageIn .45s ease forwards;
 }
 
 @keyframes pageIn{
-  to{ opacity: 1; transform: translateY(0); }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+/* Tarjeta de evento */
+.event{
+  background: #fff;
+  padding: 1.75rem;
+  border-left: 4px solid #f497b6;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+  border-radius: 12px;
+}
+
+/* Titulares */
 h2{
   font-family: 'Playfair Display', serif;
   font-size: 2.2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
-/* Cards */
-.timeline .event{
-  background: #fff;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  border-left: 4px solid #f497b6;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  border-radius: 10px;
-}
-
-.timeline h3{
-  margin-bottom: 0.5rem;
+.event h3{
   font-family: 'Playfair Display', serif;
+  font-size: 1.55rem;
+  margin-bottom: 1rem;
 }
 
-/* Fotos normales */
+/* Hero */
+.hero-card{
+  text-align: center;
+  padding: 2.5rem 1.75rem;
+}
+
+.hero-card h1{
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+}
+
+.hero-sub{
+  margin-top: .5rem;
+  font-size: 1.05rem;
+}
+
+.hero-hint{
+  margin-top: 1rem;
+  font-size: .95rem;
+  opacity: .85;
+}
+
+/* Fotos generales */
 .event-photo{
   width: 100%;
   max-height: 380px;
@@ -137,9 +117,71 @@ h2{
   margin: 1rem 0;
 }
 
-/* Eventos tipo carta */
+/* Botones */
+.btn{
+  border: none;
+  padding: .85rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn-primary{
+  background: #f497b6;
+  color: #fff;
+}
+
+.btn-primary:hover{
+  filter: brightness(0.96);
+}
+
+.btn-ghost{
+  background: rgba(255,255,255,0.85);
+  color: #333;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.btn:disabled{
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* Barra navegación */
+.pager{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 16px;
+  width: min(900px, calc(100% - 2rem));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
+
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 14px;
+  padding: .75rem .9rem;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+.page-indicator{
+  font-size: .95rem;
+  opacity: .9;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.page-indicator .dot{
+  opacity: .6;
+}
+
+/* Texto tipo carta */
 .letter-event{
-  padding: 2.5rem;
+  padding: 2.2rem;
 }
 
 .letter-event p{
@@ -148,7 +190,7 @@ h2{
   font-size: 1.05rem;
 }
 
-/* Nuestra relación: texto + foto */
+/* NUESTRA RELACIÓN: foto lateral */
 .relation-wrap{
   display: flex;
   gap: 1.5rem;
@@ -160,16 +202,18 @@ h2{
   min-width: 0;
 }
 
-.letter-event .relation-photo{
-  flex: 0 0 200px;
-  width: 200px;
+.relation-photo{
+  flex: 0 0 220px;
+  width: 220px;
   height: auto;
   object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  background: rgba(250,247,244,0.8);
+  padding: .25rem;
 }
 
-/* La primera vez que quedamos: texto + fotos */
+/* LA PRIMERA VEZ: texto + columna de fotos */
 .date-wrap{
   display: flex;
   gap: 1.5rem;
@@ -182,113 +226,78 @@ h2{
 }
 
 .date-photos{
-  flex: 0 0 220px;
-  width: 220px;
+  flex: 0 0 240px;
+  width: 240px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.side-figure{ margin: 0; }
+.side-figure{
+  margin: 0;
+}
 
 .side-photo{
   width: 100%;
-  height: auto;
+  height: 240px;           /* controla tamaño */
+  object-fit: contain;     /* NO recorta */
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.10);
-  display: block;
-  background: #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  background: rgba(250,247,244,0.85);
+  padding: .25rem;
 }
 
 .side-caption{
   margin-top: .45rem;
   font-size: .9rem;
-  color: rgba(0,0,0,0.7);
-  line-height: 1.25;
-}
-
-/* ✅ Animación “pasar página” */
-.slide-in-right{ animation: slideInRight .45s ease both; }
-.slide-in-left { animation: slideInLeft  .45s ease both; }
-.slide-out-left{ animation: slideOutLeft .35s ease both; }
-.slide-out-right{animation: slideOutRight .35s ease both; }
-
-@keyframes slideInRight{
-  from{ opacity: 0; transform: translateX(45px); }
-  to  { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInLeft{
-  from{ opacity: 0; transform: translateX(-45px); }
-  to  { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideOutLeft{
-  from{ opacity: 1; transform: translateX(0); }
-  to  { opacity: 0; transform: translateX(-45px); }
-}
-@keyframes slideOutRight{
-  from{ opacity: 1; transform: translateX(0); }
-  to  { opacity: 0; transform: translateX(45px); }
-}
-
-/* Botonera fija */
-.step-controls{
-  position: fixed;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  background: rgba(255,255,255,.85);
-  backdrop-filter: blur(8px);
-  padding: 10px 14px;
-  border-radius: 999px;
-  box-shadow: 0 5px 20px rgba(0,0,0,.12);
-  z-index: 999;
-}
-
-.step-controls button{
-  border: none;
-  background: #f497b6;
-  color: #fff;
-  padding: 10px 14px;
-  border-radius: 999px;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.step-controls button:disabled{
-  opacity: .55;
-  cursor: not-allowed;
-}
-
-.step-counter{
-  font-size: .95rem;
-  padding: 0 6px;
-  color: #333;
+  opacity: .85;
+  text-align: left;
 }
 
 /* Responsive */
-@media (max-width: 768px){
-  section{ padding: 3rem 1rem; }
-
-  .relation-wrap{ gap: 1rem; }
-  .letter-event .relation-photo{
-    flex-basis: 160px;
-    width: 160px;
+@media (max-width: 900px){
+  .relation-photo{
+    flex-basis: 190px;
+    width: 190px;
   }
-
-  .date-wrap{ gap: 1rem; }
   .date-photos{
-    flex-basis: 170px;
-    width: 170px;
+    flex-basis: 210px;
+    width: 210px;
+  }
+  .side-photo{
+    height: 220px;
   }
 }
 
-/* Reducir movimiento si el navegador lo pide */
+@media (max-width: 768px){
+  .relation-wrap,
+  .date-wrap{
+    flex-direction: column;
+  }
+
+  .relation-photo{
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .date-photos{
+    width: 100%;
+    flex-basis: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .side-figure{
+    flex: 1 1 260px;
+  }
+
+  .side-photo{
+    height: 220px;
+  }
+}
+
+/* Si alguien tiene "reducir movimiento" activado */
 @media (prefers-reduced-motion: reduce){
-  body{ animation: none; }
-  body.started .timeline{ animation: none; opacity: 1; transform: none; }
-  .start-screen{ transition: none; }
-  .slide-in-right, .slide-in-left, .slide-out-left, .slide-out-right{ animation: none; }
+  .bg{ animation: none; }
+  .page.active{ animation: none; opacity: 1; transform: none; }
 }
