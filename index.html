@@ -522,6 +522,35 @@
       const pageCounter = document.getElementById("pageCounter");
 
       let current = 0;
+      // ===== Corazones flotantes =====
+      const heartsEl = document.getElementById("hearts");
+
+      function spawnHeart(x, y){
+        if (!heartsEl) return;
+
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "❤️";
+
+        const size = 14 + Math.random() * 18;
+        heart.style.fontSize = `${size}px`;
+        heart.style.left = `${x + (Math.random()*70 - 35)}px`;
+        heart.style.top  = `${y + (Math.random()*30 - 15)}px`;
+
+        heartsEl.appendChild(heart);
+        heart.addEventListener("animationend", () => heart.remove());
+      }
+
+      function burstHearts(count = 8){
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight * 0.35;
+        for (let i = 0; i < count; i++){
+          setTimeout(() => spawnHeart(x, y), i * 60);
+        }
+      }
+
+      // Evitar que salgan en el primer render (al cargar)
+      let firstRender = true;
 
       function showPage(i) {
         current = Math.max(0, Math.min(i, pages.length - 1));
@@ -783,6 +812,7 @@ renewYes?.addEventListener("click", () => {
   </script>
 </body>
 </html>
+
 
 
 
