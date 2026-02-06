@@ -600,7 +600,7 @@
        * DESBLOQUEO: fecha para habilitar "EMPEZAR"
        ********************/
       // ✅ CAMBIA ESTA FECHA POR LA VUESTRA (formato YYYY-MM-DD)
-      const COUPLE_DATE = "2024-06-15";
+      const COUPLE_DATE = "2025-02-22";
 
       const unlockDate = document.getElementById("unlockDate");
       const unlockMsg = document.getElementById("unlockMsg");
@@ -649,10 +649,10 @@
         }
         if (v === COUPLE_DATE){
           setStartEnabled(true);
-          showUnlockMessage(true, "✅ Correcto. Desbloqueado 💘");
+          showUnlockMessage(true, "✅ Correcto");
         } else {
           setStartEnabled(false);
-          showUnlockMessage(false, "❌ Esa no es… prueba otra vez 😄");
+          showUnlockMessage(false, "❌ Esa no es… prueba again");
           shakeUnlock();
         }
       }
@@ -667,6 +667,7 @@
   </script>
 </body>
 </html>
+
 
 
 
