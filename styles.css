@@ -497,41 +497,8 @@ h2{
   width: 110px;
 }
 
-/* Evento con fotos en lateral (apiladas) */
-.evento-lateral{
-  display: flex;
-  gap: 1.2rem;
-  align-items: flex-start;
-}
 
-.evento-texto{
-  flex: 1;
-}
 
-.evento-fotos-lateral{
-  display: flex;
-  flex-direction: column;   /* una arriba y otra abajo */
-  gap: 0.8rem;
-  width: min(38%, 320px);   /* lateral “fijo” razonable */
-}
-
-.evento-fotos-lateral img{
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  border-radius: 14px;
-}
-
-/* Responsive: en móvil mejor debajo (para que no quede apretado) */
-@media (max-width: 768px){
-  .evento-lateral{
-    flex-direction: column;
-  }
-  .evento-fotos-lateral{
-    width: 100%;
-  }
-}
 
 
 
