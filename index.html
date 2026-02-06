@@ -6,13 +6,19 @@
   <title>Nuestro primer año ❤️</title>
 
   <!-- IMPORTANTE: sube el número v cuando cambies el CSS para forzar actualización -->
-  <link rel="stylesheet" href="./styles.css?v=11">
+  <link rel="stylesheet" href="./styles.css?v=12">
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 </head>
 
 <body>
+  <!-- Fondo partículas -->
+  <canvas id="stars" aria-hidden="true"></canvas>
+
   <div class="bg"></div>
+
+  <!-- Confeti (overlay) -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
 
   <main class="book">
 
@@ -30,10 +36,12 @@
 
     <!-- PÁGINA 1: PORTADA -->
     <section class="page" data-title="Portada">
-      <div class="event">
+      <div class="event" id="coverEasterEgg">
         <h3>Feliz primer año juntos Ali ❤️</h3>
         <img class="event-photo" src="./foto1.jpeg" alt="feliz primer año juntos Ali ❤️" />
         <p>Esto es solo una pequeña dedicatoria de como ha surgido todo y de nuestro recorrido, espero que te guste ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️</p>
+
+        <p class="easter-hint">💥 (Pista: haz click en la portada 😉)</p>
       </div>
     </section>
 
@@ -45,6 +53,23 @@
         <hr class="divider" />
         <img class="event-photo" src="./foto6.jpg" alt="El día que me llamaste la atención" />
         <p>(Escribe aquí qué pasó ese día. Qué viste en ella, qué pensaste, qué detalle te marcó.)</p>
+
+        <!-- FLIP CARD (ejemplo): copia/pega esta tarjeta donde quieras -->
+        <div class="flip-wrap">
+          <div class="flip" data-flip>
+            <div class="flip-face flip-front">
+              <h4>💌 Un mini-recuerdo</h4>
+              <p>Haz click para girar la tarjeta…</p>
+              <small>(queda muy bonito con frases cortas)</small>
+            </div>
+            <div class="flip-face flip-back">
+              <h4>✨</h4>
+              <p>(Escribe aquí una frase especial / una promesa / una tontería vuestra)</p>
+              <small>Click para volver</small>
+            </div>
+          </div>
+          <p class="flip-hint">Click en la tarjeta para girarla</p>
+        </div>
       </div>
     </section>
 
@@ -185,6 +210,10 @@
       <span id="pageTitle">Empezar</span>
       <span class="dot">·</span>
       <span id="pageCounter">1/1</span>
+
+      <button id="soundBtn" class="btn btn-ghost btn-sound" type="button" aria-pressed="false" title="Activar/Desactivar sonido">
+        🔈 OFF
+      </button>
     </div>
 
     <button id="nextBtn" class="btn btn-primary" type="button">Siguiente</button>
@@ -199,10 +228,94 @@
       const pageTitle = document.getElementById("pageTitle");
       const pageCounter = document.getElementById("pageCounter");
 
+      // Flip cards
+      const flipCards = Array.from(document.querySelectorAll("[data-flip]"));
+
+      // Easter egg portada
+      const coverEasterEgg = document.getElementById("coverEasterEgg");
+
+      // Sonido
+      const soundBtn = document.getElementById("soundBtn");
+      let soundEnabled = false;
+      let audioCtx = null;
+
+      function ensureAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === "suspended") audioCtx.resume();
+      }
+
+      function beep({ freq = 440, dur = 0.06, type = "sine", gain = 0.035 } = {}) {
+        if (!soundEnabled) return;
+        ensureAudio();
+        const t0 = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, t0);
+
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.exponentialRampToValueAtTime(gain, t0 + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+        osc.connect(g).connect(audioCtx.destination);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.02);
+      }
+
+      function noiseBurst({ dur = 0.10, gain = 0.02 } = {}) {
+        if (!soundEnabled) return;
+        ensureAudio();
+        const bufferSize = Math.max(1, Math.floor(audioCtx.sampleRate * dur));
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+        }
+        const src = audioCtx.createBufferSource();
+        const g = audioCtx.createGain();
+        g.gain.value = gain;
+        src.buffer = buffer;
+        src.connect(g).connect(audioCtx.destination);
+        src.start();
+      }
+
+      const sfx = {
+        slide() {
+          beep({ freq: 260, dur: 0.05, type: "sine", gain: 0.028 });
+          beep({ freq: 320, dur: 0.06, type: "sine", gain: 0.020 });
+        },
+        flip() {
+          beep({ freq: 520, dur: 0.04, type: "triangle", gain: 0.020 });
+        },
+        confetti() {
+          beep({ freq: 740, dur: 0.05, type: "square", gain: 0.015 });
+          beep({ freq: 980, dur: 0.06, type: "square", gain: 0.012 });
+          noiseBurst({ dur: 0.12, gain: 0.014 });
+        }
+      };
+
+      soundBtn?.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        soundBtn.textContent = soundEnabled ? "🔊 ON" : "🔈 OFF";
+        soundBtn.setAttribute("aria-pressed", String(soundEnabled));
+        if (soundEnabled) beep({ freq: 440, dur: 0.05, gain: 0.02 }); // “unlock” audio
+      });
+
       let current = 0;
 
+      function animateIn(pageEl, direction) {
+        pageEl.classList.remove("slide-in-left", "slide-in-right");
+        const cls = direction === "left" ? "slide-in-left" : "slide-in-right";
+        pageEl.classList.add(cls);
+        pageEl.addEventListener("animationend", () => pageEl.classList.remove(cls), { once: true });
+      }
+
       function showPage(i) {
-        current = Math.max(0, Math.min(i, pages.length - 1));
+        const prev = current;
+        const next = Math.max(0, Math.min(i, pages.length - 1));
+        const direction = next > prev ? "right" : "left";
+        current = next;
 
         pages.forEach((p, idx) => {
           p.classList.toggle("active", idx === current);
@@ -220,6 +333,12 @@
         prevBtn.disabled = current === 0;
         nextBtn.disabled = current === pages.length - 1;
 
+        // Slide in solo si no es el primer render
+        if (prev !== current) {
+          animateIn(pages[current], direction);
+          sfx.slide();
+        }
+
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
@@ -232,15 +351,157 @@
         if (e.key === "ArrowRight") showPage(current + 1);
       });
 
+      // Flip cards
+      flipCards.forEach(card => {
+        card.addEventListener("click", () => {
+          card.classList.toggle("flipped");
+          sfx.flip();
+        });
+      });
+
+      /********************
+       * Confetti
+       ********************/
+      const confettiCanvas = document.getElementById("confetti");
+      const cctx = confettiCanvas.getContext("2d");
+      let confettiPieces = [];
+      let confettiRunning = false;
+
+      function resizeCanvas(canvas) {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        canvas.width = Math.floor(canvas.clientWidth * dpr);
+        canvas.height = Math.floor(canvas.clientHeight * dpr);
+        return dpr;
+      }
+
+      function launchConfetti() {
+        const dpr = resizeCanvas(confettiCanvas);
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+
+        const count = 180;
+        confettiPieces = [];
+        for (let i = 0; i < count; i++) {
+          confettiPieces.push({
+            x: Math.random() * W,
+            y: -20 - Math.random() * H * 0.2,
+            vx: (Math.random() * 2 - 1) * 1.8 * dpr,
+            vy: (2 + Math.random() * 4) * dpr,
+            r: (2 + Math.random() * 5) * dpr,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() * 2 - 1) * 0.12,
+            hue: Math.floor(Math.random() * 360),
+            life: 0,
+            ttl: 240 + Math.floor(Math.random() * 60)
+          });
+        }
+
+        confettiRunning = true;
+        sfx.confetti();
+        requestAnimationFrame(confettiTick);
+        setTimeout(() => { confettiRunning = false; }, 2600);
+      }
+
+      function confettiTick() {
+        if (!confettiRunning) {
+          cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+          return;
+        }
+
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+        cctx.clearRect(0, 0, W, H);
+
+        for (const p of confettiPieces) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.life++;
+
+          if (p.x < -30) p.x = W + 30;
+          if (p.x > W + 30) p.x = -30;
+
+          const alpha = Math.max(0, 1 - p.life / p.ttl);
+          cctx.save();
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+          cctx.globalAlpha = alpha;
+          cctx.fillStyle = `hsl(${p.hue} 90% 60%)`;
+          cctx.fillRect(-p.r, -p.r * 0.6, p.r * 2.2, p.r * 1.2);
+          cctx.restore();
+        }
+
+        requestAnimationFrame(confettiTick);
+      }
+
+      // Easter egg: click en portada
+      coverEasterEgg?.addEventListener("click", launchConfetti);
+
+      /********************
+       * Stars / Partículas
+       ********************/
+      const starsCanvas = document.getElementById("stars");
+      const sctx = starsCanvas.getContext("2d");
+      let stars = [];
+
+      function initStars() {
+        const dpr = resizeCanvas(starsCanvas);
+        const W = starsCanvas.width;
+        const H = starsCanvas.height;
+
+        const count = Math.floor((W * H) / (22000 * dpr * dpr));
+        stars = [];
+        for (let i = 0; i < count; i++) {
+          stars.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            z: 0.4 + Math.random() * 0.9,
+            r: (0.6 + Math.random() * 1.8) * dpr,
+            vy: (0.10 + Math.random() * 0.35) * dpr,
+            tw: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      function starsTick() {
+        const W = starsCanvas.width;
+        const H = starsCanvas.height;
+
+        sctx.clearRect(0, 0, W, H);
+
+        // haze ligero
+        sctx.fillStyle = "rgba(255,255,255,0.02)";
+        sctx.fillRect(0, 0, W, H);
+
+        for (const st of stars) {
+          st.y += st.vy * st.z;
+          if (st.y > H + 10) {
+            st.y = -10;
+            st.x = Math.random() * W;
+          }
+          st.tw += 0.03;
+
+          const a = 0.35 + 0.35 * Math.sin(st.tw);
+          sctx.beginPath();
+          sctx.fillStyle = `rgba(234,240,255,${a})`;
+          sctx.arc(st.x, st.y, st.r * st.z, 0, Math.PI * 2);
+          sctx.fill();
+        }
+
+        requestAnimationFrame(starsTick);
+      }
+
+      function onResize() {
+        initStars();
+        resizeCanvas(confettiCanvas);
+      }
+      window.addEventListener("resize", onResize);
+
+      onResize();
+      starsTick();
+
       showPage(0);
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
