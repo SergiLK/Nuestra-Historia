@@ -497,6 +497,41 @@ h2{
   width: 110px;
 }
 
+.grid-fotos-2{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 por fila */
+  gap: 14px;
+  margin-top: 1rem;
+}
+
+.foto-card{
+  margin: 0;
+}
+
+.foto-card img{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.foto-card figcaption{
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+/* En móvil: 1 por fila para que se vea bien */
+@media (max-width: 700px){
+  .grid-fotos-2{
+    grid-template-columns: 1fr;
+  }
+}
+
+
 
 
 
