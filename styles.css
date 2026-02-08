@@ -530,6 +530,25 @@ h2{
     grid-template-columns: 1fr;
   }
 }
+/* Más “espacio” + destaque para las 2 especiales */
+.foto-card.especial{
+  margin-top: 18px;              /* separa respecto a las anteriores */
+  padding: 12px;                 /* aire alrededor */
+  border-radius: 18px;
+  background: rgba(255,255,255,0.06); /* suave, se nota pero no canta */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.foto-card.especial img{
+  border-radius: 16px;
+}
+
+.foto-card.especial figcaption{
+  margin-top: 0.7rem;
+  font-size: 1.05rem;            /* un pelín más grande */
+  font-weight: 600;
+}
+
 
 
 
