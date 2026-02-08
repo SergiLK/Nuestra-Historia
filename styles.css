@@ -549,6 +549,46 @@ h2{
   font-weight: 600;
 }
 
+.lightbox{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 99999;
+  background: rgba(0,0,0,0.75);
+}
+
+.lightbox.open{ display: flex; }
+
+.lightbox-img{
+  max-width: min(92vw, 520px);
+  max-height: 70vh;
+  border-radius: 18px;
+  display: block;
+}
+
+.lightbox-cap{
+  margin-top: 10px;
+  text-align: center;
+  line-height: 1.35;
+  opacity: 0.95;
+}
+
+.lightbox-close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  opacity: 0.95;
+}
+
 
 
 
