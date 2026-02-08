@@ -157,11 +157,6 @@
 </head>
 
 
-<div id="lightbox" class="lightbox" aria-hidden="true">
-  <button id="lightboxClose" class="lightbox-close" aria-label="Cerrar">×</button>
-  <img id="lightboxImg" class="lightbox-img" alt="">
-  <p id="lightboxCap" class="lightbox-cap"></p>
-</div>
 
 <body>
   <div class="bg"></div>
@@ -1024,8 +1019,74 @@ renewYes?.addEventListener("click", () => {
 
     });
   </script>
+  <!-- LIGHTBOX (zoom de fotos) -->
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <button type="button" id="lightboxClose" class="lightbox-close" aria-label="Cerrar">×</button>
+
+  <div class="lightbox-inner">
+    <img id="lightboxImg" class="lightbox-img" alt="">
+    <p id="lightboxCap" class="lightbox-cap"></p>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const lb = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lightboxImg");
+  const lbCap = document.getElementById("lightboxCap");
+  const lbClose = document.getElementById("lightboxClose");
+  if (!lb || !lbImg || !lbCap || !lbClose) return;
+
+  let prevOverflow = "";
+
+  function getCaption(imgEl){
+    // Si está dentro de figure.foto-card -> usa su figcaption
+    const fig = imgEl.closest("figure");
+    const cap = fig ? fig.querySelector("figcaption") : null;
+    if (cap && cap.textContent.trim()) return cap.textContent.trim();
+    // Si no, usa data-caption o alt
+    return (imgEl.dataset.caption || imgEl.alt || "").trim();
+  }
+
+  function openLightbox(imgEl){
+    lbImg.src = imgEl.src;
+    lbImg.alt = imgEl.alt || "Foto";
+    lbCap.textContent = getCaption(imgEl);
+
+    prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    lb.classList.add("open");
+    lb.setAttribute("aria-hidden", "false");
+  }
+
+  function closeLightbox(){
+    lb.classList.remove("open");
+    lb.setAttribute("aria-hidden", "true");
+    lbImg.src = "";
+    lbCap.textContent = "";
+    document.body.style.overflow = prevOverflow || "";
+  }
+
+  // Click en fotos del grid + también en las event-photo (por si quieres zoom ahí)
+  document.querySelectorAll(".foto-card img, .event-photo").forEach(img => {
+    img.style.cursor = "zoom-in";
+    img.addEventListener("click", () => openLightbox(img));
+  });
+
+  // Cerrar: click fuera, botón o ESC
+  lb.addEventListener("click", (e) => {
+    if (e.target === lb) closeLightbox();
+  });
+  lbClose.addEventListener("click", closeLightbox);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+  });
+});
+</script>
+
 </body>
 </html>
+
 
 
 
