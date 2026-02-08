@@ -1,60 +1,953 @@
-<section class="timeline">
-  <h2>Nuestra historia</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuestro primer año ❤️</title>
 
+  <!-- IMPORTANTE: sube el número v cuando cambies el CSS para forzar actualización -->
+  <link rel="stylesheet" href="./styles.css?v=12">
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+  <!-- SOLO lo nuevo (quiz + confetti + unlock) va aquí para no tocar tu styles.css -->
+  <style>
+    /* Confetti overlay (sin tocar styles.css) */
+    #confetti{
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* Portada: pista + hover */
+    .cover-hint{
+      margin-top: .45rem;
+      font-size: .92rem;
+      opacity: .85;
+      text-align: center;
+    }
+    .cover-photo{
+      cursor: pointer;
+      transition: transform .18s ease, filter .18s ease;
+    }
+    .cover-photo:hover{
+      transform: scale(1.01);
+      filter: brightness(1.02);
+    }
+
+    /* QUIZ */
+    .quiz{
+      margin-top: 1.2rem;
+      padding: 1.1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.75);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      transition: border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .quiz-title{
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: .35rem;
+    }
+    .quiz-question{
+      margin-bottom: .8rem;
+      opacity: .95;
+    }
+    .quiz-options{
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+    }
+    .quiz-btn{
+      flex: 1 1 260px;
+      text-align: left;
+    }
+    .quiz-feedback{
+      margin-top: .8rem;
+      font-weight: 700;
+      display: none;
+    }
+    .quiz.answered .quiz-feedback{
+      display: block;
+    }
+
+    /* Correcto = verde */
+    .quiz.correct{
+      border-color: rgba(34,197,94,0.55);
+      background: rgba(34,197,94,0.10);
+      animation: quizPop .28s ease;
+    }
+    .quiz.correct .quiz-feedback{
+      color: #15803d;
+    }
+
+    /* Incorrecto = rojo */
+    .quiz.wrong{
+      border-color: rgba(239,68,68,0.55);
+      background: rgba(239,68,68,0.10);
+      animation: quizShake .32s ease;
+    }
+    .quiz.wrong .quiz-feedback{
+      color: #b91c1c;
+    }
+
+    @keyframes quizPop{
+      0%{ transform: scale(0.98); }
+      100%{ transform: scale(1); }
+    }
+    @keyframes quizShake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-6px); }
+      50%{ transform: translateX(6px); }
+      75%{ transform: translateX(-4px); }
+      100%{ transform: translateX(0); }
+    }
+
+    /* ===== DESBLOQUEO POR FECHA ===== */
+    .unlock-wrap{
+      margin: 1.2rem auto 1rem;
+      max-width: 520px;
+      padding: 1rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .unlock-title{
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+    .unlock-input{
+      width: 100%;
+      padding: .85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.12);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+    }
+    .unlock-hint{
+      margin-top: .5rem;
+      font-size: .9rem;
+      opacity: .75;
+    }
+    .unlock-msg{
+      margin-top: .6rem;
+      font-weight: 800;
+      min-height: 1.2em;
+    }
+    .unlock-msg.ok{ color: #15803d; }
+    .unlock-msg.bad{ color: #b91c1c; }
+
+    @keyframes unlockShake{
+      0%{ transform: translateX(0); }
+      25%{ transform: translateX(-6px); }
+      50%{ transform: translateX(6px); }
+      75%{ transform: translateX(-4px); }
+      100%{ transform: translateX(0); }
+    }
+    .unlock-wrap.shake{
+      animation: unlockShake .32s ease;
+    }
+  </style>
+</head>
+
+
+
+<body>
+  <div class="bg"></div>
+
+  <!-- Confetti overlay -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <main class="book">
+
+    <!-- PÁGINA 0: EMPEZAR (con desbloqueo por fecha) -->
+    <section class="page active" data-title="Empezar">
+      <div class="event hero-card">
+        <h1>Nuestro primer año ❤️</h1>
+        <p class="hero-sub">Para Alicia ❤️</p>
+
+        <div class="unlock-wrap">
+          <p class="unlock-title">🔒 Para empezar, pon la fecha en la que empezamos a ser novios</p>
+          <input id="unlockDate" class="unlock-input" type="date" />
+          <p class="unlock-hint">Si no te deja elegir, escribe en formato YYYY-MM-DD</p>
+          <p id="unlockMsg" class="unlock-msg" aria-live="polite"></p>
+        </div>
+
+        <!-- empieza bloqueado -->
+        <button id="startBtn" class="btn btn-primary" type="button" disabled>EMPEZAR</button>
+
+        <p class="hero-hint">Pulsa “EMPEZAR” para empezar a pasar páginas ✨</p>
+      </div>
+    </section>
+
+    <!-- PÁGINA 1: PORTADA -->
+    <section class="page" data-title="Portada">
+      <div class="event">
+        <h3>Feliz primer año juntos Ali ❤️</h3>
+
+        <!-- Confeti al click -->
+        <img id="coverImg" class="event-photo cover-photo" src="./foto1.jpeg" alt="feliz primer año juntos Ali ❤️" />
+
+        <p>Esto es solo una pequeña dedicatoria de como ha surgido todo y de nuestro recorrido, espero que te guste ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️</p>
+      </div>
+    </section>
+
+    <!-- PÁGINA 2 -->
+   <section class="page" data-title="Cosas que me gustan de ti">
   <div class="event">
-    <h3>✨ El día que me llamaste la atención</h3>
-    <p>
-      (Escribe aquí qué pasó ese día. Qué viste en ella, qué pensaste, qué detalle te marcó.)
-    </p>
-  </div>
+    <h3>Cosas que me gustan de ti</h3>
 
-  <div class="event">
-    <h3>💬 Cuando empezamos a hablar semanalmente</h3>
-    <p>
-      (Cuenta cómo se volvió “normal” hablar, cómo te sentías esperando sus mensajes, qué os unió.)
-    </p>
-  </div>
+    <div class="grid-fotos-2">
+      <figure class="foto-card">
+        <img src="./foto5.jpg" alt="Alicia - foto 1">
+        <figcaption>Cuando te tapas la cara porque te estás riendo</figcaption>
+      </figure>
 
-  <div class="event">
-    <h3>❤️ Cuando me di cuenta que sentía por primera vez AMOR</h3>
-    <p>
-      (Aquí va el momento exacto: dónde estabas, qué pensaste, por qué supiste que era amor de verdad.)
-    </p>
-  </div>
+      <figure class="foto-card">
+        <img src="./foto6.jpg" alt="Alicia - foto 2">
+        <figcaption>TU SONRISA TAN PERFECTA</figcaption>
+      </figure>
 
-  <div class="event">
-    <h3>📍 La primera vez que quedamos</h3>
-    <p>
-      (Describe la cita: nervios, plan, una frase, una risa, algo que recuerdes perfecto.)
-    </p>
-  </div>
+       <figure class="foto-card">
+        <img src="./foto6.jpg" alt="Alicia - foto 3">
+        <figcaption>TU SONRISA TAN PERFECTA</figcaption>
+      </figure>
+      <!-- Añade más así (se colocan automáticamente 2 por fila) -->
+      <!--
+      <figure class="foto-card">
+        <img src="./foto7.jpg" alt="Alicia - foto 3">
+        <figcaption>Otro texto...</figcaption>
+      </figure>
 
-  <div class="event">
-    <h3>💞 Somos novios</h3>
-    <p>
-      (Cómo fue, cómo lo pedisteis o cómo se dio, qué sentiste, qué cambió a partir de ahí.)
-    </p>
-  </div>
+      <figure class="foto-card">
+        <img src="./foto8.jpg" alt="Alicia - foto 4">
+        <figcaption>Otro texto...</figcaption>
+      </figure>
+      -->
+    </div>
 
-  <div class="event">
-    <h3>🌙 Nuestra relación</h3>
-    <p> Ali,
-<p>No sé muy bien por dónde empezar, sé que hemos estado teniendo unos meses algo raretes y un poco complicados, se nos han mezclado muchas cosas, y no hemos sabido afrontarlo tan bien como podríamos haberlo hecho, pero creo que no pasa nada al fin y al cabo seguimos siendo nuevos en esto de tener un relación, asi que sé que todo va a ir hacia arriba. Igualmente para animar las cosas un poco, quería regalarte algo que no se pueda guardar en una caja, algo que puedas leer cuando quieras recordar lo que somos y lo que elegimos cada día.
-<p><p>Quiero que nunca pienses que nadie te ama, porque no te puedes hacer una idea lo que eres para mi, si lo necesitases me arrancará el corazón y te lo daría. Te amaré el resto de mi vida al máximo, mi objetivo es solo intentar hacerte lo más feliz que pueda. Tu sonrisa es lo más bonito que he visto en mi vida, y no exagero, cuando sonríes tanto que salen tus colmillos, cuando te ries tanto que tu nariz se estrecha un poco, es perfecto. Estar contigo se siente así: como llegar a un lugar donde todo se siente como un juego como una película, no tengo que fingir, solo estoy feliz y disfrutando de todo. Solo me haces sentirme yo de verdad, y eres la única que me hace sentir tan especial, y único.
-<p><p>Me encanta cómo haces que lo normal y aburrido se vuelva interesante y divertido sin darte cuenta. Me gusta cuando estamos en tu casa y de repente te vuelves loca y te pones a cantar, cuando pegas un salto del sofá y te pones a bailar como un pirada. Cuando me metes un chillido, me encanta esa parte de tí más agitada y loca. Al igual que tambien me encanta tu ser mas tranquilo, mas de estar tumbados sin hacer nada, juntos hablando, me gusta cuando te hago sentir sobre estimulada, JAJA sé que a ti en ese momento te dan ganas de matarme, pero ya sabes que como fan y como hater me encanta hacerte picar.
-<p><p>No eres perfecta porque no tengas defectos, lo eres porque eres real y sincera. Porque sientes, porque te esfuerzas, porque dudas, porque quieres bien. Y porque incluso en los momentos difíciles sigues eligiendo quedarte conmigo y seguir construyendo esta relación junto a mi. Eso, Ali, es de las cosas que más admiro y más me gustan de ti, porque sé y entiendo lo que se siente cuando hemos estado en esta racha mala, es por eso que te siento tan fuertemente junto a mi y deseo con todo mi corazón poder seguir disfrutando del resto de mi vida de la mano contigo. Contigo he aprendido que el amor no siempre hace ruido, a veces simplemente calma, acompaña. Y creo que tienes un don con tu calma y forma de escuchar a la gente que hasta a veces me siento mal por no poder ser así como tú.
-<p><p>Gracias por tu paciencia conmigo en serio, por mirarme como si vieras en mí cosas que a veces ni yo veo. Gracias por hacerme querer mejorar no por miedo a pensar que te puedo perder, sino por ganas de estar a tu altura porque aunque no te lo creas, para mí TÚ eres la persona a la que considero mi SÍMBOLO, a qué me refiero con “símbolo”, eres la persona a la que aspiro a ser en la gran mayoría de aspectos de la vida, tu empatía, tu calma, tu forma de afrontar muchos problemas, tu capacidad de entender a la gente a la primera, tu aspecto físico también porque me pareces la persona más atractiva del mundo y la chica con mejor estilo del planeta. Gracias por ser mi novia, mi mejor amiga y esa persona a la que siempre quiero contarle todo primero.
-<p><p>No sé cómo será nuestro futuro, pero sí sé algo con absoluta certeza y claridad: quiero vivirlo contigo TODO. Aprender a quererte mejor, entenderte mejor, aprender que te gusta, aprender qué necesitas en cada momento, poder leerte como a un libro, crecer a tu lado, reírnos de nuestras tonterías y apoyarnos cuando la vida apriete y sea más difícil. Si algún día dudas, quiero que recuerdes esto: yo te elegí cuando me fijé en tí por primera vez, cuando me enamoré de ti y todos los días de mi vida, y te seguiré eligiendo el resto de mi vida, porque no existe nada o nadie que sea un 0,00000001 * 10^ a un googleplex que se te acerque a ti. Te elegiré hoy, mañana y todas las veces que haga falta.
-<p><p>Este San Valentín no quiero prometer cosas imposibles, solo algo muy sencillo e importante para mi: cuidarte, escucharte, hacerte sentir cómoda y quererte de la mejor forma que sé. Porque para mi amarte no es algo complicado, al contrario, es lo más natural y fácil que hago, porque eres la mejor chica de mi MUNDO.
-<p>Gracias por existir.<p>
-<p>Gracias por ser mi lugar seguro.<p>
-<p>Gracias por ser tal y como eres.<p>
-<p>Te quiero, Ali.<p>
-Y me siento inmensamente afortunado de que seas tú, de verdad que no sabes cuan afortunado me siento teniendote a ti a mi lado.<p>
-<p>Eres más de lo que podría pedir y eres más de lo que esperaba alguna vez encontrar.
-<p><p>Te amo Alicia 💙<p>
-
-   
-    </p>
+    <hr class="divider" />
   </div>
 </section>
+
+
+    <!-- PÁGINA 3 (EXAMEN) -->
+    <section class="page" data-title="Cuando empezamos a hablar semanalmente">
+      <div class="event">
+        <h3>💬 Cuando empezamos a hablar semanalmente, aprendiste muchas cosas de mi así que EXAMEN</h3>
+        <p>(Responde a las siguientes preguntas sobre mi, cada acierto sube 1 pto, cada error quita 1 pto)</p>
+
+        <p style="text-align:center; font-weight:700; margin-top:10px;">
+          Puntuación: <span id="score">0</span>
+        </p>
+
+        <!-- PREGUNTA 1 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 1</h4>
+          <p class="quiz-question">¿Cuál es mi color favorito?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">🧡 Naranja</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">💜 Morado</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 2 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 2</h4>
+          <p class="quiz-question">¿Cuál es mi número de la suerte?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">23</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">22</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">33</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 3 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 3</h4>
+          <p class="quiz-question">¿Cuál es mi comida favorita?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">🍕 Pizza</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">🍣 Sushi</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">🍝 Espaguetis carbonara</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 4 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 4</h4>
+          <p class="quiz-question">¿Qué parte de ti me gusta mas?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Ojos</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Sonrisa</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Cuerpo</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 5 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 5</h4>
+          <p class="quiz-question">¿Cómo llamamos a cuando hacemos o pensamos algo a la vez?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">chuche</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">coincidencia</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Santi</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 6 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 6</h4>
+          <p class="quiz-question">¿Cual color me pega mas segun tú?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Verde</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Rojo</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Azul</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 7 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 7</h4>
+          <p class="quiz-question">¿Qué día fue nuestro primer beso?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">6 febrero</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">22 diciembre</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">20 diciembre</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 8 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 8</h4>
+          <p class="quiz-question">¿Qué sueño es el que mas veces te he dicho que quiero contigo?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Ser rico</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Casarme</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Ser famoso</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 9 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 9</h4>
+          <p class="quiz-question">¿En una discusion soy mas de?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Hacer una broma para quitar tensión</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="wrong">Callarme y hablar después</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Hablarlo al momento</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+        <!-- PREGUNTA 10 -->
+        <div class="quiz" data-quiz aria-live="polite">
+          <h4 class="quiz-title">💘 Pregunta 10</h4>
+          <p class="quiz-question">¿Quién quiere mas al otro?</p>
+
+          <div class="quiz-options">
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Alicia</button>
+            <button class="btn btn-ghost quiz-btn" type="button" data-answer="correct">Sergio</button>
+          </div>
+
+          <p class="quiz-feedback"></p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PÁGINA 4 -->
+    <section class="page" data-title="Cuando me di cuenta que sentía AMOR">
+      <div class="event">
+        <h3>❤️ Cuando me di cuenta que sentía por primera vez AMOR</h3>
+        <p><p>El dia que me llamaste la atencion.</p>
+
+<p>Nunca te he llegado a contar cómo fue la forma en la que de un momento a otro empecé a verte y ya no sentirte solo como una amiga, siempre te he dicho que evidentemente ha sido algo gradual, y que como eras preciosa me ibas enamorando poco a poco, pero la realidad es que durante todo primero de bachillerato me parecías muy buena amiga, y disfrutaba el tiempo que pasaba contigo hablando. Pero no fue hasta segundo de bachillerato que ahí empezaba ya a darme cuenta que quizás, no solo me pareces guapa y ya, sino que a lo mejor realmente podrías llegar a ser algo más.</p>
+
+<p>Y es curioso, porque no fue por una cosa muy grande ni nada, sino por una tontería que, en su día, me dejó algo rayado. Fue un dia en que en clase de física te noté bastante mal, yo estaba detrás tuya haciendo el payaso, hablandote y molestando un poco, yendo a mi bola y tú, que en ese momento tampoco teníamos tanta confianza y de normal siempre has tenido esa mezcla de paciencia y simpatía, me miraste seria y me soltaste algo como: “¿Puedes parar ya?” (o algo por el estilo). No fue nada fuerte, ni un enfado en serio, pero yo estaba intentando a ver si podía animarte un poco. Fue tu tono. Tu forma de decirlo. Fue ahí cuando me dí el golpe.</p>
+
+<p>Porque en ese instante me noté raro, no por el hecho de que te había molestado, sino porque de repente me empecé a sentir extraño, como si de la nada te hubieses convertido en una persona con la que me importaba quedar bien, y esto es algo que no me importaba, ni me había pasado con nadie. Me importó lo que pensabas de mí. Me importó que estuvieras molesta. Me importó el intentar querer hablar contigo para arreglarlo. Y eso, para mí, fue una señal muy clara de que algo me estaba pasando, aunque yo no supiera que era.</p>
+
+<p>A partir de ese día empecé a fijarme más en tí, me quedaba muchas clases embobado mirando en diagonal desde la esquina de la clase a tu asiento, que esto se lo puedes preguntar a nico hugo y kostadin porque a veces hasta ellos me preguntaban si me gustabas JAJA, cómo te reías cuando algo te hacía gracia, cómo no te callabas y estabas hablando, ahora me doy cuenta y realmente se te notaba que tenias TDH jsjsjsjsjsjs.</p>
+
+<p>Ahora creo que llega un punto bastante importante, la puesta de Ana. Fue esta noche cuando por primera vez me di cuenta que me gustabas, estuve toda la noche persiguiendote, hablando contigo, pidiendo que me dejases el vape, vamos que no me despegaba de ti ni aunque quisiese, de hecho hasta hubo un momento que me dijiste que me fuese a otro lado que estaba super “pegajoso”, ahí not gonna lie, me sentí mal, pero igualmente no importaba porque ahí fue el momento que confirmé que me gustabas un poco, y fue a partir de ahí que te empecé a escribir y contestar cada vez que te veia en instagram, bereal, etc.</p>
+
+<p>Luego el tiempo pasó y siempre nos hablábamos cada semana de normal, empezó la uni y lo mismo, cuando subías una historia siempre te contestaba, nos ponemos a hablar un rato, luego te empezaba a molestar hablando de cualquier tema. Pero claro como ya no nos veíamos tanto no era lo mismo, y supongo que la sensación que tenía contigo se fue apagando.</p>
+
+<p>Pero para mi suerte coincidimos por primera vez después de empezar la uni en una discoteca, OCCO, sitio en el que estuvimos como de normal, hablando durante la noche y disfrutando, pero es que esta imagen no se me olvida absolutamente nada, me acuerdo que yo me sentía un poco mal con dolor de barriga, y estuve 1 hora fuera descansando, y cuando volví a entrar estuvimos en el típico círculo de fiesta y yo al lado tuya cantando, pues hubo un momento en el que pusieron una canción que no me sabía y me quedé mirándote 2 minutos seguidos y ahi me volvio a salir la sensacion, esa sensacion que empecé a tener en bachillerato, me empecé a rayar porque me estaba dando cuenta que no importaba como que con el mínimo hecho de estar un rato juntos y hablar, volvía a sentir esa sensación rara.</p>
+
+<p>Así que desde ese momento pensé que si me sentía así era porque realmente me gustabas y ya, entonces seguí seguí y seguí hablando contigo todas las veces que podía, pero a la vez tampoco quería intentar nada porque me daba miedo, nunca había hablado con nadie para intentar algo, entonces simplemente no sabia que hacer, por eso solo te contaba mi vida.</p>
+
+<p>Poco después a finales de verano estuve bastante deprimido, no me apetecía nada, no tenía ganas de salir no quería ni estar con amigos, y fue ahí que de milagro sin yo ser el que respondía a nada, TÚ me escribiste a mi, me acuerdo que me enviaste una foto de ti corriendo, y desde ahí poco a poco volvió esa sensación a florecer, empezamos a hablar casi todos los días, y ya en septiembre hablábamos muchísimo, y quizás soy yo pero creo que todas las cosas que ya había sentido hacia ti de antes hicieron que el sentirme tan conectado a ti, el hablar todos los días, el que fueses la chispa que me activase a poder vivir feliz y con normalidad, todo esto hizo que empezase a sentir algo más fuerte que una “sensación”.</p>
+
+<p>Ahí entendí que lo mío ya no era solo un “me gusta y ya” o “qué guapa es”. Era otra cosa. Empecé a notar que me ponía nervioso. Que buscaba cualquier excusa para coincidir contigo. Que me quedaba pensando en lo que me habías dicho, en cómo lo habías dicho y en cómo, sin darte cuenta, me habías puesto el corazón a mil, encima yo que me entran mariposas contigo a punta pala.</p>
+
+<p>Era esa sensación rara de querer estar cerca, de que un día normal se volviera mejor solo porque estabas tú, solo porque me mandases un mísero mensaje. Y desde entonces, sin prisa pero sin pausa, acabé dándome cuenta que estaba tan emocionado con cualquier cosa que estuviese relacionado contigo, que todo lo que viniese de ti significaba yo emocionarme disfrutar y gritar de la alegría. Ahí creo que entendí que lo que estaba sintiendo por primera vez en mi vida, era el estar enamorado.</p>
+
+<p>Al principio no lo entendía, porque era algo nuevo. Solo notaba que algo se me movía por dentro, que cuando no estábamos hablando, el día se quedaba un poco más soso, y cuando aparecías, todo se encendía como una llama. Para mi no era una ilusión. Era una mezcla rara de ansiedad bonita y calma, como si el corazón no supiera si correr o quedarse quieto, literalmente.</p>
+
+<p>Cualquier detalle tuyo era mucho más de lo normal: una frase, un gesto, una nota de voz.</p>
+
+<p>Me quedaba revisando el móvil “por si acaso”(lo sigo haciendo a dia de hoy)</p>
+
+<p>Estar ardientemente enamorado por primera vez es sentir que te han abierto una puerta que no sabías que existía. Todo se vuelve completamente algo intenso: el deseo de verte, de tocarte, de olerte de cerca, el deseo de cuidarte, de que esté bien, de que nadie te haga daño. No es solo “me gusta”. Es “hago todo lo que sea por ti”.</p>
+
+<p>Y siendo la primera vez que me enamoraba en mi vida, todo me sorprendia. Porque no tienes referencia, es todo absolutamente nuevo. Normalmente te crees que el amor es una idea o una frase típica, y de pronto me doy cuenta de que es algo real que te cambia las rutinas, te hace escuchar canciones de artistas que no conoces, practicar hobbies que nunca has hecho, te hace recordar momentos como si fueran escenas, te hace imaginar futuro sin querer. Y todo por querer sentirte más cerca de la otra persona.</p>
+
+<p>Es precioso estar enamorado.</p>
+
+<p>Y fue después de darme cuenta de todo esto, que cogí una hoja de papel de mi escritorio, y escribí la nota que te di, “23 de Octubre, estoy enamorado de Alicia”.</p>
+</p>
+      </div>
+    </section>
+
+    <!-- PÁGINA 5 -->
+    <section class="page" data-title="La primera vez que quedamos">
+      <div class="event letter-event">
+        <h3>La primera vez que quedamos</h3>
+
+        <div class="date-wrap">
+          <div class="date-text">
+            <p>Esa semana la tengo grabada. Te lo dije la semana anterior: que quería quedar contigo para intentar hacer algo y que te enamorases de mí (claro, yo no sabía que ya te gustaba).</p>
+
+<p>Yo me acuerdo de estar todos los días muerto de dolor de barriga, de los nervios y de mariposas. Pero fue justo cuando fuimos a Vizzio cuando se me quitaron las dudas que tenía sobre si todo iba a salir bien o no. Porque esa noche yo te estuve mirando todo el tiempo: no te aparté la mirada ni un solo momento. Para mí era la primera vez que sentía algo tan fuerte sin ser absolutamente nada más que amigos.</p>
+
+<p>Qué risa cuando me salí a la terraza con Kostadin y empecé a hablar de ti, sobre cómo no sabía qué hacer porque estaba sintiendo tanto solo por estar CERCA DE TI, que el tío se levantó y me dijo: “no seas un cagón”. Y creo que, supongo, que gracias a eso fue que fui directo hacia ti, te cogí de la mano y por segunda vez nos besamos. No te imaginas lo que estaba sintiendo en ese momento: no me estaba preocupando por nada, solo en sentir tu beso al máximo para poder recordarlo.</p>
+
+<p>Fue ahí cuando ya sabía que daba igual que me odiases, acabase cayéndote mal o simplemente nos separase la vida: iba a hacer absolutamente todo por perseguirte y conseguir estar a tu lado.</p>
+
+<p>Dos días después llegó por fin nuestra PRIMERA CITA. Yo estaba muerto por dentro; no sabía si tomarme 15 valerianas o simplemente morir. Me acuerdo de ir por la mañana al mercado del Tiro de Línea para comprar los tulipanes rojos que había reservado de antemano, y nada más llegar a casa mi madre gritar diciendo: “Se nos hace mayor”.</p>
+
+<p>Pero no solo me dijo eso, claro. Me dijo que esos tulipanes no eran suficientes y que el ramo tenía que ser más grande. Así que, para que veas, fue idea de MI MADRE comprar también las rosas y unirlas en un ramo.</p>
+
+<p>Fuimos al Costco mi padre y yo en coche, y me estuvo dando una charla de cómo era todo esto tan repentino: quién eras, si eras guapa, si estaba enamorado de ti. Le conté absolutamente todo, muerto de vergüenza, claro, que hasta se estaba riendo de la cara de tomate que tenía. Pero bueno, al final me aconsejó y me dijo una cosa que creo que fue muy importante para mí: “pase lo que pase con esta chica, disfrútalo, e intenta no abrumarla mucho, que te conozco” JAJAJAJA.</p>
+
+<p>Puede que tuviese bastante razón en lo de abrumar… pero también tenía mucha, mucha más razón en lo de disfrutar, porque creo que no he disfrutado más en mi vida.</p>
+
+<p>Bueno, que me voy por las ramas. Al final acabamos comprando 20 rosas de color rosa porque sabía que las rojas tú las odiabas. Entonces tuvimos que buscar unas rosas y tuvimos suerte porque justo quedaba solo un ramo de color rosa. Ya en casa, después de comprar todo, ahí fue la primera vez que mi madre me enseñó a hacer un arreglo de flores. Y la verdad es que no entendí nada, pero me servía para dártelo.</p>
+
+<p>Y por fin llegó el momento que llevaba esperando tantos meses: quedar contigo sintiéndome completamente enamorado de ti, y creyendo que tú también sentías lo mismo.</p>
+
+<p>Fui al metro a recogerte. Recuerdo la chaqueta que tenías puesta y el paro cardíaco que me dio al verte, porque estabas GUAPÍSIMA. En el camino a mi casa no sabía ni cómo mirarte a la cara; no paraba de mirar al frente porque es que no era capaz. Pero al menos fui capaz de darte un beso en la mejilla.</p>
+
+<p>Estaba tan nervioso y cagado por dentro que pensaba que lo mejor para romper el hielo era sacar a mi perro juntos… pero bueno, por lo menos eso duró poquito.</p>
+
+<p>Y BUAAAAAA, POR FIN, cuando volvimos a mi casa tenía el ramo escondido en la cocina esperando para dártelo con ganas. Y cuando te lo di… TU CARA. LA CARA DE SORPRESA. DE ASOMBRO. ME ENCANTÓ.</p>
+
+<p>Ahí ya perdí por completo los nervios y me dejé simplemente disfrutar el momento sin miedo ni nervios. Nos sentamos en el sofá, te expliqué más o menos rápidamente todo el plan que tenía y quería hacer contigo con las flores, y simplemente me acerqué a ti… y te besé. Creo que estaba sintiéndome tan pero tan… NO SÉ, ¿BIEN? Pero fue lo mejor de mi vida.</p>
+
+<p>Después ya solo estaba en el mood de felicidad absoluta de siempre. Iba súper contento, hablándote del restaurante, y acabamos comiendo bastante bien (tú poca comida; en el momento me extrañé y pensaba que no te gustaba, pero he ido aprendiendo que simplemente no comes tanto).</p>
+
+<p>Terminamos de comer, subimos a mi casa, te di el ramo de flores y te acompañé al metro de vuelta. Me daba tanta risa y tanta relajación que todo hubiese salido como había planeado… lo estaba disfrutando todo al máximo. Y ahí lo último que también me encantó fue bajar las escaleras del metro contigo y despedirme besándote entera e intentando recordar ese beso.</p>
+
+<p>Volví a mi casa literalmente dando saltos como en las películas JAJAJAJAJAJAJA.</p>
+
+<p>Me metí en la cama intentando procesar todo lo que había pasado y flipando con lo guapa que estabas. Llegaron mis padres y como locos me empezaron a preguntar que cómo había ido todo, y estaba tan, tan, tan feliz / nervioso / procesando todo, que me saturé y no pude decir nada. Lo tuve que decir todo al día siguiente.</p>
+
+<p>Definitivamente, un día que nunca se me va a ir de mi cabeza jamás, pero jamás, jamás. Me encantó todo, y gracias a ti todo salió bien.</p>
+
+          </div>
+
+          <div class="date-photos">
+            <figure class="side-figure">
+              <img class="side-photo" src="./foto9.jpeg" alt="La primera vez que quedamos - flores" />
+              <figcaption class="side-caption">El primer ramo de flores que doy en mi vida, tuyo</figcaption>
+            </figure>
+
+            <figure class="side-figure">
+              <img class="side-photo" src="./foto8.jpeg" alt="Mensaje del día siguiente" />
+              <figcaption class="side-caption">Este mensaje es lo que le escribí a Fátima al día siguiente</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 6 -->
+    <section class="page" data-title="Novios">
+      <div class="event">
+        <h3>💞 Novios 💞</h3>
+        <p>(Cómo fue, cómo lo pedisteis o cómo se dio, qué sentiste, qué cambió a partir de ahí.)</p>
+      </div>
+    </section>
+
+    <!-- PÁGINA 7 -->
+    <section class="page" data-title="Nuestra relación">
+      <div class="event letter-event">
+        <h3>🌙 Nuestra relación</h3>
+
+        <div class="relation-wrap">
+          <div class="relation-text">
+            <p>Ali</p>
+
+<p>No sé muy bien por dónde empezar, sé que hemos estado teniendo unos meses algo raretes y un poco complicados, se nos han mezclado muchas cosas, y no hemos sabido afrontarlo tan bien como podríamos haberlo hecho, pero creo que no pasa nada al fin y al cabo seguimos siendo nuevos en esto de tener un relación, asi que sé que todo va a ir hacia arriba. Igualmente para animar las cosas un poco, quería regalarte algo que no se pueda guardar en una caja, algo que puedas leer cuando quieras recordar lo que somos y lo que elegimos cada día.</p>
+
+<p>Quiero que nunca pienses que nadie te ama, porque no te puedes hacer una idea lo que eres para mi, si lo necesitases me arrancará el corazón y te lo daría. Te amaré el resto de mi vida al máximo, mi objetivo es solo intentar hacerte lo más feliz que pueda. Tu sonrisa es lo más bonito que he visto en mi vida, y no exagero, cuando sonríes tanto que salen tus colmillos, cuando te ries tanto que tu nariz se estrecha un poco, es perfecto. Estar contigo se siente así: como llegar a un lugar donde todo se siente como un juego como una película, no tengo que fingir, solo estoy feliz y disfrutando de todo. Solo me haces sentirme yo de verdad, y eres la única que me hace sentir tan especial, y único.</p>
+
+<p>Me encanta cómo haces que lo normal y aburrido se vuelva interesante y divertido sin darte cuenta. Me gusta cuando estamos en tu casa y de repente te vuelves loca y te pones a cantar, cuando pegas un salto del sofá y te pones a bailar como un pirada. Cuando me metes un chillido, me encanta esa parte de tí más agitada y loca. Al igual que tambien me encanta tu ser mas tranquilo, mas de estar tumbados sin hacer nada, juntos hablando, me gusta cuando te hago sentir sobre estimulada, JAJA sé que a ti en ese momento te dan ganas de matarme, pero ya sabes que como fan y como hater me encanta hacerte picar.</p>
+
+<p>No eres perfecta porque no tengas defectos, lo eres porque eres real y sincera. Porque sientes, porque te esfuerzas, porque dudas, porque quieres bien. Y porque incluso en los momentos difíciles sigues eligiendo quedarte conmigo y seguir construyendo esta relación junto a mi. Eso, Ali, es de las cosas que más admiro y más me gustan de ti, porque sé y entiendo lo que se siente cuando hemos estado en esta racha mala, es por eso que te siento tan fuertemente junto a mi y deseo con todo mi corazón poder seguir disfrutando del resto de mi vida de la mano contigo. Contigo he aprendido que el amor no siempre hace ruido, a veces simplemente calma, acompaña. Y creo que tienes un don con tu calma y forma de escuchar a la gente que hasta a veces me siento mal por no poder ser así como tú.</p>
+
+<p>Gracias por tu paciencia conmigo en serio, por mirarme como si vieras en mí cosas que a veces ni yo veo. Gracias por hacerme querer mejorar no por miedo a pensar que te puedo perder, sino por ganas de estar a tu altura porque aunque no te lo creas, para mí TÚ eres la persona a la que considero mi SÍMBOLO, a qué me refiero con “símbolo”, eres la persona a la que aspiro a ser en la gran mayoría de aspectos de la vida, tu empatía, tu calma, tu forma de afrontar muchos problemas, tu capacidad de entender a la gente a la primera, tu aspecto físico también porque me pareces la persona más atractiva del mundo y la chica con mejor estilo del planeta. Gracias por ser mi novia, mi mejor amiga y esa persona a la que siempre quiero contarle todo primero.</p>
+
+<p>No sé cómo será nuestro futuro, pero sí sé algo con absoluta certeza y claridad: quiero vivirlo contigo TODO. Aprender a quererte mejor, entenderte mejor, aprender que te gusta, aprender qué necesitas en cada momento, poder leerte como a un libro, crecer a tu lado, reírnos de nuestras tonterías y apoyarnos cuando la vida apriete y sea más difícil. Si algún día dudas, quiero que recuerdes esto: yo te elegí cuando me fijé en tí por primera vez, cuando me enamoré de ti y todos los días de mi vida, y te seguiré eligiendo el resto de mi vida, porque no existe nada o nadie que sea un 0,00000001 * 10^ a un googleplex que se te acerque a ti. Te elegiré hoy, mañana y todas las veces que haga falta.</p>
+
+<p>Este dia tan  importante que jamás voy a olvidar no quiero prometer cosas imposibles, solo algo muy sencillo e importante para mi: cuidarte, escucharte, hacerte sentir cómoda y quererte de la mejor forma que sé. Porque para mi amarte no es algo complicado, al contrario, es lo más natural y fácil que hago, porque eres la mejor chica de mi MUNDO.</p>
+
+<p>Gracias por existir.</p>
+<p>Gracias por ser mi lugar seguro.</p>
+<p>Gracias por ser tal y como eres.</p>
+
+<p>Te quiero, Ali.</p>
+
+<p>Y me siento inmensamente afortunado de que seas tú, de verdad que no sabes cuan afortunado me siento teniendote a ti a mi lado.</p>
+
+<p>Eres más de lo que podría pedir y eres más de lo que esperaba alguna vez encontrar.</p>
+
+<p>Te amo</p>
+
+<p>Sergio 💙</p>
+
+          </div>
+
+          <img class="relation-photo" src="./foto7.jpeg" alt="Foto nuestra" />
+        </div>
+      </div>
+    </section>
+<!-- PÁGINA FINAL -->
+<section class="page" data-title="Te amo">
+  <div class="event final-card">
+    <h2 class="final-title">❤️Te amo❤️</h2>
+    <p class="final-sub">❤️No hay palabras que puedan explicar lo mucho que eres para mi❤️</p>
+
+    <p class="final-question">¿Quieres ser mi novia otro año mas❤️?</p>
+
+
+    <div class="final-actions">
+      <button id="renewYes" class="btn btn-primary final-yes" type="button">Sí</button>
+      <button id="renewNo" class="btn btn-ghost final-no" type="button">No</button>
+    </div>
+
+    <p id="renewMsg" class="final-msg" aria-live="polite"></p>
+  </div>
+</section>
+
+  </main>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="pager" aria-label="Navegación">
+    <button id="prevBtn" class="btn btn-ghost" type="button">Anterior</button>
+
+    <div class="page-indicator">
+      <span id="pageTitle">Empezar</span>
+      <span class="dot">·</span>
+      <span id="pageCounter">1/1</span>
+    </div>
+
+    <button id="nextBtn" class="btn btn-primary" type="button">Siguiente</button>
+  </nav>
+<!-- Corazones flotantes -->
+<div id="hearts" aria-hidden="true"></div>
+
+<!-- Música (elige tú el mp3) -->
+<audio id="bgm" preload="auto" loop playsinline>
+  <source src="./cancion.mp3?v=1" type="audio/mpeg">
+</audio>
+
+<div class="music-controls" aria-label="Controles de música">
+  <button id="musicBtn" class="btn btn-ghost" type="button">🎵 Música</button>
+  <input id="musicVol" type="range" min="0" max="1" step="0.05" value="0.35" aria-label="Volumen música" />
+</div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pages = Array.from(document.querySelectorAll(".page"));
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const startBtn = document.getElementById("startBtn");
+      const pageTitle = document.getElementById("pageTitle");
+      const pageCounter = document.getElementById("pageCounter");
+
+      let current = 0;
+      // ===== Corazones flotantes =====
+      const heartsEl = document.getElementById("hearts");
+
+      function spawnHeart(x, y){
+        if (!heartsEl) return;
+
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "❤️";
+
+        const size = 14 + Math.random() * 18;
+        heart.style.fontSize = `${size}px`;
+        heart.style.left = `${x + (Math.random()*70 - 35)}px`;
+        heart.style.top  = `${y + (Math.random()*30 - 15)}px`;
+
+        heartsEl.appendChild(heart);
+        heart.addEventListener("animationend", () => heart.remove());
+      }
+
+      function burstHearts(count = 8){
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight * 0.35;
+        for (let i = 0; i < count; i++){
+          setTimeout(() => spawnHeart(x, y), i * 60);
+        }
+      }
+
+      // Evitar que salgan en el primer render (al cargar)
+      let firstRender = true;
+
+      function showPage(i) {
+        current = Math.max(0, Math.min(i, pages.length - 1));
+
+        pages.forEach((p, idx) => {
+          p.classList.toggle("active", idx === current);
+        });
+
+        const title = pages[current].dataset.title || `Página ${current + 1}`;
+        pageTitle.textContent = title;
+        pageCounter.textContent = `${current + 1}/${pages.length}`;
+
+        const onStart = current === 0;
+        prevBtn.style.visibility = onStart ? "hidden" : "visible";
+        nextBtn.style.visibility = onStart ? "hidden" : "visible";
+
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === pages.length - 1;
+        if (!firstRender) burstHearts(8);
+        firstRender = false;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+     startBtn?.addEventListener("click", async () => {
+  try {
+    const bgm = document.getElementById("bgm");
+    if (bgm && bgm.paused) await bgm.play();
+  } catch (e) {}
+  showPage(1);
+});
+
+      prevBtn.addEventListener("click", () => showPage(current - 1));
+      nextBtn.addEventListener("click", () => showPage(current + 1));
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") showPage(current - 1);
+        if (e.key === "ArrowRight") showPage(current + 1);
+      });
+
+      showPage(0);
+
+      /********************
+       * CONFETTI (click en la imagen de portada)
+       ********************/
+      const confettiCanvas = document.getElementById("confetti");
+      const cctx = confettiCanvas.getContext("2d");
+
+      let confettiPieces = [];
+      let confettiRunning = false;
+
+      function resizeConfetti() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+        confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+        return dpr;
+      }
+
+      function launchConfetti() {
+        const dpr = resizeConfetti();
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+
+        const count = 180;
+        confettiPieces = [];
+
+        for (let i = 0; i < count; i++) {
+          confettiPieces.push({
+            x: Math.random() * W,
+            y: -20 - Math.random() * H * 0.2,
+            vx: (Math.random() * 2 - 1) * 1.8 * dpr,
+            vy: (2 + Math.random() * 4) * dpr,
+            r: (2 + Math.random() * 5) * dpr,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() * 2 - 1) * 0.12,
+            hue: Math.floor(Math.random() * 360),
+            life: 0,
+            ttl: 240 + Math.floor(Math.random() * 60)
+          });
+        }
+
+        confettiRunning = true;
+        requestAnimationFrame(confettiTick);
+        setTimeout(() => { confettiRunning = false; }, 2600);
+      }
+
+      function confettiTick() {
+        if (!confettiRunning) {
+          cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+          return;
+        }
+
+        const W = confettiCanvas.width;
+        const H = confettiCanvas.height;
+        cctx.clearRect(0, 0, W, H);
+
+        for (const p of confettiPieces) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vr;
+          p.life++;
+
+          if (p.x < -30) p.x = W + 30;
+          if (p.x > W + 30) p.x = -30;
+
+          const alpha = Math.max(0, 1 - p.life / p.ttl);
+          cctx.save();
+          cctx.translate(p.x, p.y);
+          cctx.rotate(p.rot);
+          cctx.globalAlpha = alpha;
+          cctx.fillStyle = `hsl(${p.hue} 90% 60%)`;
+          cctx.fillRect(-p.r, -p.r * 0.6, p.r * 2.2, p.r * 1.2);
+          cctx.restore();
+        }
+
+        requestAnimationFrame(confettiTick);
+      }
+
+      resizeConfetti();
+      window.addEventListener("resize", resizeConfetti);
+
+      const coverImg = document.getElementById("coverImg");
+      coverImg?.addEventListener("click", launchConfetti);
+      // ===== Música (Play/Pausa + Volumen) =====
+      const bgm = document.getElementById("bgm");
+      const musicBtn = document.getElementById("musicBtn");
+      const musicVol = document.getElementById("musicVol");
+
+      if (bgm) {
+        bgm.volume = Number(musicVol?.value ?? 0.35);
+        bgm.load();
+
+      }
+
+      musicVol?.addEventListener("input", () => {
+        if (!bgm) return;
+        bgm.volume = Number(musicVol.value);
+      });
+
+      function updateMusicBtn(){
+        if (!musicBtn || !bgm) return;
+        musicBtn.textContent = bgm.paused ? "🎵 Música" : "⏸️ Pausar";
+      }
+
+      musicBtn?.addEventListener("click", async () => {
+  if (!bgm) return;
+
+  try {
+    bgm.muted = false;
+    if (bgm.readyState === 0) bgm.load(); // fuerza carga si aún no ha cargado
+
+    if (bgm.paused) await bgm.play();
+    else bgm.pause();
+  } catch (err) {
+    console.error(err);
+    alert("Error al reproducir: " + (err?.name || err));
+  } finally {
+    updateMusicBtn();
+  }
+});
+
+
+      bgm?.addEventListener("play", updateMusicBtn);
+      bgm?.addEventListener("pause", updateMusicBtn);
+      updateMusicBtn();
+
+      /********************
+       * QUIZ (MÚLTIPLES preguntas + puntuación)
+       ********************/
+      let score = 0;
+      const scoreEl = document.getElementById("score");
+
+      function setScore(v){
+        score = v;
+        if (scoreEl) scoreEl.textContent = String(score);
+      }
+
+      document.querySelectorAll(".quiz[data-quiz]").forEach((quiz) => {
+        const feedback = quiz.querySelector(".quiz-feedback");
+        const buttons = quiz.querySelectorAll("button[data-answer]");
+
+        buttons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (quiz.classList.contains("answered")) return;
+
+            const result = btn.dataset.answer; // "correct" o "wrong"
+            quiz.classList.add("answered");
+            buttons.forEach(b => b.disabled = true);
+
+            if (result === "correct") {
+              quiz.classList.add("correct");
+              if (feedback) feedback.textContent = "✅ Correcto 💘";
+              setScore(score + 1);
+            } else {
+              quiz.classList.add("wrong");
+              if (feedback) feedback.textContent = "❌ Incorrecto 😄";
+              setScore(score - 1);
+            }
+          });
+        });
+      });
+
+      /********************
+       * DESBLOQUEO: fecha para habilitar "EMPEZAR"
+       ********************/
+      // ✅ CAMBIA ESTA FECHA POR LA VUESTRA (formato YYYY-MM-DD)
+      const COUPLE_DATE = "2025-02-22";
+
+      const unlockDate = document.getElementById("unlockDate");
+      const unlockMsg = document.getElementById("unlockMsg");
+
+      function normalizeDate(v){
+        if (!v) return "";
+        v = v.trim();
+        const iso = /^\d{4}-\d{2}-\d{2}$/;
+        if (iso.test(v)) return v;
+
+        const es = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+        const m = v.match(es);
+        if (m){
+          const dd = m[1], mm = m[2], yyyy = m[3];
+          return `${yyyy}-${mm}-${dd}`;
+        }
+        return v;
+      }
+
+      function setStartEnabled(enabled){
+        if (!startBtn) return;
+        startBtn.disabled = !enabled;
+      }
+
+      function showUnlockMessage(ok, text){
+        if (!unlockMsg) return;
+        unlockMsg.textContent = text;
+        unlockMsg.classList.toggle("ok", ok);
+        unlockMsg.classList.toggle("bad", !ok);
+      }
+
+      function shakeUnlock(){
+        const box = document.querySelector(".unlock-wrap");
+        if (!box) return;
+        box.classList.remove("shake");
+        void box.offsetWidth;
+        box.classList.add("shake");
+      }
+
+      function checkUnlock(){
+        const v = normalizeDate(unlockDate?.value || "");
+        if (!v){
+          setStartEnabled(false);
+          showUnlockMessage(false, "");
+          return;
+        }
+        if (v === COUPLE_DATE){
+          setStartEnabled(true);
+          showUnlockMessage(true, "✅ Correcto");
+        } else {
+          setStartEnabled(false);
+          showUnlockMessage(false, "❌ Esa no es… prueba again");
+          shakeUnlock();
+        }
+      }
+
+      // Estado inicial: bloqueado
+      setStartEnabled(false);
+
+      unlockDate?.addEventListener("input", checkUnlock);
+      unlockDate?.addEventListener("change", checkUnlock);
+/********************
+ * FINAL: "¿Quieres ser mi novia otro año más?"
+ ********************/
+const renewYes = document.getElementById("renewYes");
+const renewNo  = document.getElementById("renewNo");
+const renewMsg = document.getElementById("renewMsg");
+
+let noCount = 0;
+
+function applyYesSize(steps){
+  const s = Math.min(steps, 5);
+  const scale = 1 + s * 0.18;
+  renewYes.style.transform = `scale(${scale})`;
+  renewYes.style.fontSize = `${1 + s * 0.12}rem`;
+  renewYes.style.padding  = `${0.85 + s * 0.10}rem ${1.10 + s * 0.20}rem`;
+}
+
+renewNo?.addEventListener("click", () => {
+  noCount++;
+
+  // 1 a 4: crece y sale "prueba otra vez"
+  if (noCount <= 4) {
+    applyYesSize(noCount);
+    if (renewMsg) renewMsg.textContent = "😄 Esa respuesta no vale…";
+    return;
+  }
+
+  // 5º: NO desaparece y ya NO mostramos mensajes
+  renewNo.style.display = "none";
+  applyYesSize(5);
+  if (renewMsg) renewMsg.textContent = "";
+});
+
+renewYes?.addEventListener("click", () => {
+  if (renewMsg) renewMsg.textContent = "";
+
+  if (typeof launchConfetti === "function") launchConfetti();
+  burstHearts(16);
+
+  if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+
+  setTimeout(() => {
+    window.location.href = "./si.html";
+  }, 1200);
+});
+
+    });
+  </script>
+</body>
+</html>
+
+
+
