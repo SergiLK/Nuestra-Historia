@@ -669,7 +669,15 @@
 </div>
 
   <script>
+    
     document.addEventListener("DOMContentLoaded", () => {
+      // ===== INTRO: ocultar cuando TODO haya cargado (imágenes incluidas) =====
+const intro = document.getElementById("intro");
+window.addEventListener("load", () => {
+  intro?.classList.add("is-hidden");
+  // opcional: eliminar del DOM tras el fade
+  setTimeout(() => intro?.remove(), 700);
+});
       const pages = Array.from(document.querySelectorAll(".page"));
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
@@ -1090,6 +1098,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
