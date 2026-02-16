@@ -610,6 +610,9 @@ h2{
   .intro{ transition: none; }
 }
 
+.event p { 
+  margin: 0 0 1rem; 
+}
 
 
 
