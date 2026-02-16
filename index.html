@@ -673,10 +673,14 @@
     document.addEventListener("DOMContentLoaded", () => {
       // ===== INTRO: ocultar cuando TODO haya cargado (imágenes incluidas) =====
 const intro = document.getElementById("intro");
+const INTRO_DELAY = 2500; // ms que se queda visible
+const INTRO_FADE  = 600;  // ms del fade (debe coincidir con el CSS)
+
 window.addEventListener("load", () => {
-  intro?.classList.add("is-hidden");
-  // opcional: eliminar del DOM tras el fade
-  setTimeout(() => intro?.remove(), 700);
+  setTimeout(() => {
+    intro?.classList.add("is-hidden");
+    setTimeout(() => intro?.remove(), INTRO_FADE + 100);
+  }, INTRO_DELAY);
 });
       const pages = Array.from(document.querySelectorAll(".page"));
       const prevBtn = document.getElementById("prevBtn");
@@ -1098,6 +1102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
+
 
 
 
